@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="circle_menu_button_color_normal">#bdbdbd</color>
+    <color name="circle_menu_button_color_pressed">#9e9e9e</color>
+    <color name="circle_menu_button_color_disabled">#ffffff</color>
+
+    <color name="circle_menu_center_button_color_normal">#ffffff</color>
+    <color name="circle_menu_center_button_color_pressed">#eeeeee</color>
+    <color name="circle_menu_center_button_color_opened">#88ffffff</color>
+
+</resources>

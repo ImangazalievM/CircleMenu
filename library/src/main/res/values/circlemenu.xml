@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleMenu">
+        <attr name="start_angle" format="integer"/>
+        <attr name="toggle_animation_duration" format="integer"/>
+        <attr name="select_animation_duration" format="integer"/>
+        <attr name="exit_animation_duration" format="integer"/>
+        <attr name="distance" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="MenuButton">
+        <attr name="colorPressed" format="color"/>
+        <attr name="colorDisabled" format="color"/>
+        <attr name="colorNormal" format="color"/>
+        <attr name="icon" format="reference"/>
+    </declare-styleable>
+
+
+</resources>

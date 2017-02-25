@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="circle_menu_button_size">56dp</dimen>
+    <dimen name="circle_menu_distance">100dp</dimen>
+</resources>

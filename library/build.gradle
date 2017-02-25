@@ -1,0 +1,41 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    aaptOptions {
+        additionalParameters "--no-version-vectors"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:25.1.1'
+}
+
+// это блок будет обработан плагином bintray-release
+publish {
+    groupId = 'imangazalievm'
+    artifactId = 'circlemenu'
+    publishVersion = '1.0.0'
+    desc = 'CircleMenu is a simple, elegant menu with a circular layout'
+    licences = ['MIT']
+    website = 'https://github.com/ImangazalievM/CircleMenu'
+}
