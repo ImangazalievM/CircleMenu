@@ -12,13 +12,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
 public class ItemSelectionAnimator {
 
-    public static final int SELECT_ANIMATION_DURATION = 5550;
-    public static final int EXIT_ANIMATION_DURATION = 5600;
+    public static final int SELECT_ANIMATION_DURATION = 550;
+    public static final int EXIT_ANIMATION_DURATION = 600;
 
     private static final float START_CIRCLE_SIZE = 1;
     private static final float END_CIRCLE_SIZE = 1.3f;

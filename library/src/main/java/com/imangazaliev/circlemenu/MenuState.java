@@ -13,7 +13,7 @@ import java.lang.annotation.RetentionPolicy;
         MenuState.COLLAPSE_ANIMATION_STARTED,
         MenuState.SELECT_ANIMATION_STARTED,
         MenuState.SELECT_ANIMATION_FINISHED,
-        MenuState.EXIT_ANIMATION_STARTED ,
+        MenuState.EXIT_ANIMATION_STARTED,
         MenuState.EXIT_ANIMATION_FINISHED
 })
 public @interface MenuState {

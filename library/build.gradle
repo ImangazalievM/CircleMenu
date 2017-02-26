@@ -18,6 +18,10 @@ android {
         additionalParameters "--no-version-vectors"
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
     buildTypes {
         release {
             minifyEnabled false
