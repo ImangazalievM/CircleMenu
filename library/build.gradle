@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
+final LIBRARY_VERSION_NAME = '1.0.1'
+final LIBRARY_VERSION_CODE = 2
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -8,8 +11,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0.1"
+        versionCode LIBRARY_VERSION_CODE
+        versionName LIBRARY_VERSION_NAME
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -38,7 +41,7 @@ dependencies {
 publish {
     groupId = 'imangazalievm'
     artifactId = 'circlemenu'
-    publishVersion = '1.0.1'
+    publishVersion = LIBRARY_VERSION_NAME
     desc = 'CircleMenu is a simple, elegant menu with a circular layout'
     licences = ['MIT']
     website = 'https://github.com/ImangazalievM/CircleMenu'
