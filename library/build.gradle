@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -38,7 +38,7 @@ dependencies {
 publish {
     groupId = 'imangazalievm'
     artifactId = 'circlemenu'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'CircleMenu is a simple, elegant menu with a circular layout'
     licences = ['MIT']
     website = 'https://github.com/ImangazalievM/CircleMenu'
