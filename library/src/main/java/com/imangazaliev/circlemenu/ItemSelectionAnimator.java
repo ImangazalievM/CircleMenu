@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.os.Build;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
 public class ItemSelectionAnimator {
@@ -22,13 +23,13 @@ public class ItemSelectionAnimator {
     private static final float START_CIRCLE_SIZE = 1;
     private static final float END_CIRCLE_SIZE = 1.3f;
 
-    private static final int START_CIRCLE_ANGLE = 0;
+    private static final int START_CIRCLE_ANGLE = 1;
     private static final int END_CIRCLE_ANGLE = 360;
 
     private static final int ALPHA_TRANSPARENT = 0;
     private static final int ALPHA_OPAQUE = 255;
 
-    public interface AnimationListener {
+    public interface AnimationDrawController {
         void redrawView();
     }
 
@@ -47,11 +48,11 @@ public class ItemSelectionAnimator {
     private boolean mAnimationIsActive;
 
     private MenuController mMenuController;
-    private AnimationListener mAnimationListener;
+    private AnimationDrawController mAnimationDrawController;
 
-    public ItemSelectionAnimator(MenuController menuController, AnimationListener animationListener) {
+    public ItemSelectionAnimator(MenuController menuController, AnimationDrawController animationDrawController) {
         this.mMenuController = menuController;
-        this.mAnimationListener = animationListener;
+        this.mAnimationDrawController = animationDrawController;
         this.mAnimationIsActive = false;
         this.mCurrentCircleAngle = START_CIRCLE_ANGLE;
         this.mCircleAlpha = ALPHA_OPAQUE;
@@ -108,13 +109,14 @@ public class ItemSelectionAnimator {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 mCurrentCircleAngle = (float) animation.getAnimatedValue();
-
+                mAnimationDrawController.redrawView();
+                
                 if (mCurrentCircleAngle == END_CIRCLE_ANGLE) {
                     mMenuController.setState(MenuState.SELECT_ANIMATION_FINISHED);
                     startExitAnimation();
                 }
 
-                mAnimationListener.redrawView();
+
             }
 
 
@@ -136,17 +138,17 @@ public class ItemSelectionAnimator {
                 float animationValue = (float) animation.getAnimatedValue();
                 mCurrentCircleRadius = mOriginalCircleRadius * animationValue;
                 mCurrentCircleStrokeWidth = mOriginalCircleStrokeWidth * animationValue;
+                mAnimationDrawController.redrawView();
 
                 if (animationValue == END_CIRCLE_SIZE) {
                     mCurrentCircleAngle = START_CIRCLE_ANGLE;
                     mCurrentCircleRadius = mOriginalCircleRadius;
                     mCurrentCircleStrokeWidth = mOriginalCircleStrokeWidth;
+                    mAnimationDrawController.redrawView();
 
                     mMenuController.setState(MenuState.EXIT_ANIMATION_FINISHED);
                     onAnimationFinished();
                 }
-
-                mAnimationListener.redrawView();
             }
 
 
