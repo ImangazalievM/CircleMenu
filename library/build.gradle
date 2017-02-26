@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
-final LIBRARY_VERSION_NAME = '1.0.1'
+final LIBRARY_VERSION_NAME = '1.0.2'
 final LIBRARY_VERSION_CODE = 2
 
 android {

@@ -110,7 +110,7 @@ public class ItemSelectionAnimator {
             public void onAnimationUpdate(ValueAnimator animation) {
                 mCurrentCircleAngle = (float) animation.getAnimatedValue();
                 mAnimationDrawController.redrawView();
-                
+
                 if (mCurrentCircleAngle == END_CIRCLE_ANGLE) {
                     mMenuController.setState(MenuState.SELECT_ANIMATION_FINISHED);
                     startExitAnimation();
