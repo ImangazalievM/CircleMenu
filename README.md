@@ -4,7 +4,7 @@
 
 CircleMenu is a simple, elegant menu with a circular layout.
 
-<img src="https://github.com/ImangazalievM/CircleMenu/blob/master/art/splash.png" width="33%">
+<img src="https://github.com/ImangazalievM/CircleMenu/blob/master/art/preview.gif" width="33%">
 
 # Setup
 
