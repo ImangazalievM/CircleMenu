@@ -9,7 +9,7 @@ CircleMenu is a simple, elegant menu with a circular layout.
 Add this to your app build.gradle:
 
 ```gradle
-compile 'com.github.imangazalievm:circlemenu:2.0.1'
+compile 'com.github.imangazalievm:circlemenu:1.0.1'
 ```
 
 # Usage
