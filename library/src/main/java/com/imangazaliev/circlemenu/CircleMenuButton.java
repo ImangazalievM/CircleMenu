@@ -19,7 +19,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 
-public class MenuButton extends AppCompatImageButton {
+public class CircleMenuButton extends AppCompatImageButton {
 
     private int mColorNormal;
     private int mColorPressed;
@@ -31,26 +31,26 @@ public class MenuButton extends AppCompatImageButton {
 
     private int mButtonSize;
 
-    public MenuButton(Context context) {
+    public CircleMenuButton(Context context) {
         this(context, null);
     }
 
-    public MenuButton(Context context, AttributeSet attrs) {
+    public CircleMenuButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public MenuButton(Context context, AttributeSet attrs, int defStyle) {
+    public CircleMenuButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs);
     }
 
     void init(Context context, AttributeSet attributeSet) {
-        TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.MenuButton, 0, 0);
-        mColorNormal = attr.getColor(R.styleable.MenuButton_colorNormal, getColor(R.color.circle_menu_button_color_normal));
-        mColorPressed = attr.getColor(R.styleable.MenuButton_colorPressed, getColor(R.color.circle_menu_button_color_pressed));
-        mColorDisabled = attr.getColor(R.styleable.MenuButton_colorDisabled, getColor(R.color.circle_menu_button_color_disabled));
-        mIcon = attr.getResourceId(R.styleable.MenuButton_icon, 0);
+        TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.CircleMenuButton, 0, 0);
+        mColorNormal = attr.getColor(R.styleable.CircleMenuButton_colorNormal, getColor(R.color.circle_menu_button_color_normal));
+        mColorPressed = attr.getColor(R.styleable.CircleMenuButton_colorPressed, getColor(R.color.circle_menu_button_color_pressed));
+        mColorDisabled = attr.getColor(R.styleable.CircleMenuButton_colorDisabled, getColor(R.color.circle_menu_button_color_disabled));
+        mIcon = attr.getResourceId(R.styleable.CircleMenuButton_icon, 0);
         attr.recycle();
 
         mButtonSize = (int) getDimension(R.dimen.circle_menu_button_size);

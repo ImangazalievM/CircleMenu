@@ -13,7 +13,7 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.animation.OvershootInterpolator;
 
-public class CenterMenuButton extends MenuButton {
+public class CenterMenuButton extends CircleMenuButton {
 
     private boolean mExpanded;
     private AnimatorSet preLollipopAnimationSet;

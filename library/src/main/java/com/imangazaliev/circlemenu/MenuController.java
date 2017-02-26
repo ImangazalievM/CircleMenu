@@ -3,6 +3,7 @@ package com.imangazaliev.circlemenu;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.os.Handler;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
@@ -24,19 +25,11 @@ public class MenuController {
 
         void onExpanded();
 
-        void onSelectAnimationStarted();
-
-        void onSelectAnimationFinished();
-
-        void onExitAnimationStarted();
-
-        void onExitAnimationFinished();
-
-        void onItemClick(MenuButton menuButton);
+        void onItemClick(CircleMenuButton menuButton);
     }
 
-    private List<MenuButton> mButtons = new ArrayList<>();
-    private HashMap<MenuButton, MenuButtonPoint> mButtonsPositions = new HashMap<>();
+    private List<CircleMenuButton> mButtons = new ArrayList<>();
+    private HashMap<CircleMenuButton, MenuButtonPoint> mButtonsPositions = new HashMap<>();
 
     private int mCenterPositionX, mCenterPositionY;
 
@@ -62,7 +55,7 @@ public class MenuController {
         mCenterPositionY = centerY;
 
         for (int i = 0; i < childCount; i++) {
-            final MenuButton button = mButtons.get(i);
+            final CircleMenuButton button = mButtons.get(i);
 
             if (button.getVisibility() == View.GONE) {
                 continue;
@@ -119,7 +112,7 @@ public class MenuController {
         setState(MenuState.COLLAPSE_ANIMATION_STARTED);
 
         for (int i = 0; i < getButtonsCount(); i++) {
-            final MenuButton button = mButtons.get(i);
+            final CircleMenuButton button = mButtons.get(i);
             MenuButtonPoint buttonPosition = mButtonsPositions.get(button);
 
             float startPositionX = buttonPosition.x;
@@ -155,16 +148,17 @@ public class MenuController {
                     button.requestLayout();
                 }
             });
-            buttonAnimatorY.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    setState(MenuState.COLLAPSED);
-                }
-            });
             buttonAnimatorY.setDuration(ANIMATION_DURATION);
             buttonAnimatorY.setStartDelay(ANIMATION_DELAY);
             buttonAnimatorY.start();
         }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setState(MenuState.COLLAPSED);
+            }
+        }, ANIMATION_DURATION);
     }
 
     private void startExpandAnimation() {
@@ -172,7 +166,7 @@ public class MenuController {
 
         showItems();
         for (int i = 0; i < getButtonsCount(); i++) {
-            final MenuButton button = mButtons.get(i);
+            final CircleMenuButton button = mButtons.get(i);
             MenuButtonPoint buttonPosition = mButtonsPositions.get(button);
 
             float startPositionX = mCenterPositionX;
@@ -184,6 +178,7 @@ public class MenuController {
             button.setX(startPositionX);
             button.setY(startPositionY);
 
+            //x axis animation
             ValueAnimator buttonAnimatorX = ValueAnimator.ofFloat(startPositionX, endPositionX);
             buttonAnimatorX.setInterpolator(new DecelerateInterpolator());
             buttonAnimatorX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -197,6 +192,7 @@ public class MenuController {
             buttonAnimatorX.setStartDelay(ANIMATION_DELAY);
             buttonAnimatorX.start();
 
+            //y axis animation
             ValueAnimator buttonAnimatorY = ValueAnimator.ofFloat(startPositionY, endPositionY);
             buttonAnimatorY.setInterpolator(new DecelerateInterpolator());
             buttonAnimatorY.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -207,16 +203,17 @@ public class MenuController {
                     button.requestLayout();
                 }
             });
-            buttonAnimatorY.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    setState(MenuState.EXPANDED);
-                }
-            });
             buttonAnimatorY.setDuration(ANIMATION_DURATION);
             buttonAnimatorY.setStartDelay(ANIMATION_DELAY);
             buttonAnimatorY.start();
         }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setState(MenuState.EXPANDED);
+            }
+        }, ANIMATION_DURATION);
     }
 
     public void setState(@MenuState int state) {
@@ -240,17 +237,13 @@ public class MenuController {
                 break;
             case MenuState.SELECT_ANIMATION_STARTED:
                 disableItems();
-                mListener.onSelectAnimationStarted();
                 break;
             case MenuState.SELECT_ANIMATION_FINISHED:
                 hideItems();
-                mListener.onSelectAnimationFinished();
                 break;
             case MenuState.EXIT_ANIMATION_STARTED:
-                mListener.onExitAnimationStarted();
                 break;
             case MenuState.EXIT_ANIMATION_FINISHED:
-                mListener.onExitAnimationFinished();
                 break;
         }
     }
@@ -259,7 +252,7 @@ public class MenuController {
         return mState == MenuState.EXPANDED;
     }
 
-    public void addButton(final MenuButton menuButton) {
+    public void addButton(final CircleMenuButton menuButton) {
         mButtons.add(menuButton);
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -269,7 +262,7 @@ public class MenuController {
         });
     }
 
-    private void onItemClick(MenuButton menuButton) {
+    private void onItemClick(CircleMenuButton menuButton) {
         if (mListener != null) {
             mListener.onItemClick(menuButton);
         }
@@ -303,7 +296,7 @@ public class MenuController {
         }
     }
 
-    public MenuButtonPoint getButtonsPoint(MenuButton menuButton) {
+    public MenuButtonPoint getButtonsPoint(CircleMenuButton menuButton) {
         return mButtonsPositions.get(menuButton);
     }
 

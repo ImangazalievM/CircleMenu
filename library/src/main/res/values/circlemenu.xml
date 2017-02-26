@@ -8,7 +8,7 @@
         <attr name="distance" format="integer"/>
     </declare-styleable>
 
-    <declare-styleable name="MenuButton">
+    <declare-styleable name="CircleMenuButton">
         <attr name="colorPressed" format="color"/>
         <attr name="colorDisabled" format="color"/>
         <attr name="colorNormal" format="color"/>

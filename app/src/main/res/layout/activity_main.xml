@@ -8,10 +8,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:id="@+id/circleMenu"
         >
 
-        <com.imangazaliev.circlemenu.MenuButton
-            android:id="@+id/dssd"
+        <com.imangazaliev.circlemenu.CircleMenuButton
+            android:id="@+id/favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:colorNormal="#2196F3"
@@ -19,32 +20,32 @@
             app:icon="@drawable/ic_favorite"
             />
 
-        <com.imangazaliev.circlemenu.MenuButton
-            android:id="@+id/ddaa"
+        <com.imangazaliev.circlemenu.CircleMenuButton
+            android:id="@+id/search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:colorNormal="#4CAF50"
             app:colorPressed="#43A047"
             app:icon="@drawable/ic_search"/>
 
-        <com.imangazaliev.circlemenu.MenuButton
-            android:id="@+id/d13d"
+        <com.imangazaliev.circlemenu.CircleMenuButton
+            android:id="@+id/alert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:colorNormal="#F44336"
             app:colorPressed="#E53935"
             app:icon="@drawable/ic_alert"/>
 
-        <com.imangazaliev.circlemenu.MenuButton
-            android:id="@+id/dd"
+        <com.imangazaliev.circlemenu.CircleMenuButton
+            android:id="@+id/place"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:colorNormal="#9C27B0"
             app:colorPressed="#8E24AA"
             app:icon="@drawable/ic_place"/>
 
-        <com.imangazaliev.circlemenu.MenuButton
-            android:id="@+id/action_aa"
+        <com.imangazaliev.circlemenu.CircleMenuButton
+            android:id="@+id/edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:colorNormal="#FF9800"

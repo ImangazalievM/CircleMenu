@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 public class CircleMenu extends ViewGroup implements MenuController.ControllerListener, ItemSelectionAnimator.AnimationListener {
 
     public interface OnItemClickListener {
-        void onItemClick(MenuButton menuButton);
+        void onItemClick(CircleMenuButton menuButton);
     }
 
     public interface OnStateUpdateListener {
@@ -71,14 +71,13 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             if (child != mCenterButton) {
-                mMenuController.addButton((MenuButton) child);
+                mMenuController.addButton((CircleMenuButton) child);
             }
         }
     }
 
     private void createCenterButton(Context context) {
         mCenterButton = new CenterMenuButton(context);
-        setId(R.id.circle_menu_center_button);
         mCenterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,7 +163,6 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
         mItemSelectionAnimator.setCircleRadius(mRadius, circleWidth, circleHeight);
     }
 
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
@@ -203,7 +201,7 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
     }
 
     @Override
-    public void onItemClick(MenuButton menuButton) {
+    public void onItemClick(CircleMenuButton menuButton) {
         mCenterButton.setExpanded(false);
         mItemSelectionAnimator.onItemClick(menuButton, mMenuController.getButtonsPoint(menuButton));
 
@@ -217,26 +215,6 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
         invalidate();
     }
 
-    @Override
-    public void onSelectAnimationStarted() {
-
-    }
-
-    @Override
-    public void onSelectAnimationFinished() {
-
-    }
-
-    @Override
-    public void onExitAnimationStarted() {
-
-    }
-
-    @Override
-    public void onExitAnimationFinished() {
-
-    }
-
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
     }
@@ -247,6 +225,11 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
 
     public boolean isExpanded() {
         return mMenuController.isExpanded();
+    }
+
+    public void addButton(CircleMenuButton menuButton) {
+        addView(menuButton, getChildCount() - 1);
+        mMenuController.addButton(menuButton);
     }
 
 }

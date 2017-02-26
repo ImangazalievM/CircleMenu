@@ -64,7 +64,7 @@ public class ItemSelectionAnimator {
         this.mMenuHeight = menuHeight;
     }
 
-    public void onItemClick(MenuButton menuButton, MenuButtonPoint menuButtonPoint) {
+    public void onItemClick(CircleMenuButton menuButton, MenuButtonPoint menuButtonPoint) {
         mCircleColor = menuButton.getColorNormal();
         mOriginalCircleStrokeWidth = menuButton.getWidth();
         mCurrentCircleStrokeWidth = mOriginalCircleStrokeWidth;
