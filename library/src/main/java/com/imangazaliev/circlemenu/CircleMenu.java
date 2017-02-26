@@ -186,6 +186,26 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
     }
 
     @Override
+    public void onSelectAnimationStarted() {
+        mCenterButton.setClickable(false);
+    }
+
+    @Override
+    public void onSelectAnimationFinished() {
+
+    }
+
+    @Override
+    public void onExitAnimationStarted() {
+
+    }
+
+    @Override
+    public void onExitAnimationFinished() {
+        mCenterButton.setClickable(true);
+    }
+
+    @Override
     public void onStartCollapsing() {
         mCenterButton.setExpanded(false);
         mCenterButton.setClickable(false);

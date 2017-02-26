@@ -1,7 +1,5 @@
 package com.imangazaliev.circlemenu;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.os.Handler;
 import android.view.View;
@@ -13,10 +11,11 @@ import java.util.List;
 
 public class MenuController {
 
-    private static final int ANIMATION_DELAY = 100;
-    private static final int ANIMATION_DURATION = 200;
+    private static final int TOGGLE_ANIMATION_DELAY = 100;
+    private static final int TOGGLE_ANIMATION_DURATION = 200;
 
     public interface ControllerListener {
+
         void onStartCollapsing();
 
         void onCollapsed();
@@ -24,6 +23,14 @@ public class MenuController {
         void onStartExpanding();
 
         void onExpanded();
+
+        void onSelectAnimationStarted();
+
+        void onSelectAnimationFinished();
+
+        void onExitAnimationStarted();
+
+        void onExitAnimationFinished();
 
         void onItemClick(CircleMenuButton menuButton);
     }
@@ -133,8 +140,8 @@ public class MenuController {
                     button.requestLayout();
                 }
             });
-            buttonAnimatorX.setDuration(ANIMATION_DURATION);
-            buttonAnimatorX.setStartDelay(ANIMATION_DELAY);
+            buttonAnimatorX.setDuration(TOGGLE_ANIMATION_DURATION);
+            buttonAnimatorX.setStartDelay(TOGGLE_ANIMATION_DELAY);
             buttonAnimatorX.start();
 
 
@@ -148,8 +155,8 @@ public class MenuController {
                     button.requestLayout();
                 }
             });
-            buttonAnimatorY.setDuration(ANIMATION_DURATION);
-            buttonAnimatorY.setStartDelay(ANIMATION_DELAY);
+            buttonAnimatorY.setDuration(TOGGLE_ANIMATION_DURATION);
+            buttonAnimatorY.setStartDelay(TOGGLE_ANIMATION_DELAY);
             buttonAnimatorY.start();
         }
 
@@ -158,7 +165,7 @@ public class MenuController {
             public void run() {
                 setState(MenuState.COLLAPSED);
             }
-        }, ANIMATION_DURATION);
+        }, TOGGLE_ANIMATION_DURATION);
     }
 
     private void startExpandAnimation() {
@@ -188,8 +195,8 @@ public class MenuController {
                     button.requestLayout();
                 }
             });
-            buttonAnimatorX.setDuration(ANIMATION_DURATION);
-            buttonAnimatorX.setStartDelay(ANIMATION_DELAY);
+            buttonAnimatorX.setDuration(TOGGLE_ANIMATION_DURATION);
+            buttonAnimatorX.setStartDelay(TOGGLE_ANIMATION_DELAY);
             buttonAnimatorX.start();
 
             //y axis animation
@@ -203,8 +210,8 @@ public class MenuController {
                     button.requestLayout();
                 }
             });
-            buttonAnimatorY.setDuration(ANIMATION_DURATION);
-            buttonAnimatorY.setStartDelay(ANIMATION_DELAY);
+            buttonAnimatorY.setDuration(TOGGLE_ANIMATION_DURATION);
+            buttonAnimatorY.setStartDelay(TOGGLE_ANIMATION_DELAY);
             buttonAnimatorY.start();
         }
 
@@ -213,7 +220,7 @@ public class MenuController {
             public void run() {
                 setState(MenuState.EXPANDED);
             }
-        }, ANIMATION_DURATION);
+        }, TOGGLE_ANIMATION_DURATION);
     }
 
     public void setState(@MenuState int state) {
@@ -237,13 +244,17 @@ public class MenuController {
                 break;
             case MenuState.SELECT_ANIMATION_STARTED:
                 disableItems();
+                mListener.onSelectAnimationStarted();
                 break;
             case MenuState.SELECT_ANIMATION_FINISHED:
                 hideItems();
+                mListener.onSelectAnimationFinished();
                 break;
             case MenuState.EXIT_ANIMATION_STARTED:
+                mListener.onExitAnimationStarted();
                 break;
             case MenuState.EXIT_ANIMATION_FINISHED:
+                mListener.onExitAnimationFinished();
                 break;
         }
     }
@@ -299,7 +310,6 @@ public class MenuController {
     public MenuButtonPoint getButtonsPoint(CircleMenuButton menuButton) {
         return mButtonsPositions.get(menuButton);
     }
-
 
 
 }
