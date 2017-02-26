@@ -1,5 +1,7 @@
 # CircleMenu
 
+<img src="https://github.com/ImangazalievM/CircleMenu/blob/master/art/splash.png" width="100%">
+
 CircleMenu is a simple, elegant menu with a circular layout.
 
 # Setup
