@@ -26,7 +26,7 @@ Add to your layout xml-file:
         android:id="@+id/circleMenu"
         >
 
-        <com.imangazaliev.circlemenu.MenuButton
+        <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@ Add to your layout xml-file:
             app:icon="@drawable/ic_favorite"
             />
 
-        <com.imangazaliev.circlemenu.MenuButton
+        <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@ Add to your layout xml-file:
             app:colorPressed="#43A047"
             app:icon="@drawable/ic_search"/>
 
-        <com.imangazaliev.circlemenu.MenuButton
+        <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/alert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
