@@ -39,7 +39,7 @@ dependencies {
 
 // это блок будет обработан плагином bintray-release
 publish {
-    groupId = 'imangazalievm'
+    groupId = 'com.github.imangazalievm'
     artifactId = 'circlemenu'
     publishVersion = LIBRARY_VERSION_NAME
     desc = 'CircleMenu is a simple, elegant menu with a circular layout'
