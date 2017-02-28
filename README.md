@@ -1,5 +1,9 @@
 # CircleMenu
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-CircleMenu-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5361)
+![minSdkVersion 21](https://img.shields.io/badge/minSdkVersion-15-blue.svg)
+[ ![Download](https://api.bintray.com/packages/imangazaliev/maven/circlemenu/images/download.svg) ](https://bintray.com/imangazaliev/maven/circlemenu/_latestVersion)
+
 <img src="https://github.com/ImangazalievM/CircleMenu/blob/master/art/splash.png" width="100%">
 
 CircleMenu is a simple, elegant menu with a circular layout.
