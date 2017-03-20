@@ -1,7 +1,7 @@
 package com.imangazaliev.circlemenu.sample;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,19 +21,19 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(CircleMenuButton menuButton) {
                 switch (menuButton.getId()) {
                     case R.id.favorite:
-                        showMssage("Favorite");
+                        showMessage("Favorite");
                         break;
                     case R.id.search:
-                        showMssage("Search");
+                        showMessage("Search");
                         break;
                     case R.id.alert:
-                        showMssage("Alert");
+                        showMessage("Alert");
                         break;
                     case R.id.place:
-                        showMssage("Place");
+                        showMessage("Place");
                         break;
                     case R.id.edit:
-                        showMssage("Edit");
+                        showMessage("Edit");
                         break;
                 }
             }
@@ -52,9 +52,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showMssage(String message) {
+    private void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
 
 }

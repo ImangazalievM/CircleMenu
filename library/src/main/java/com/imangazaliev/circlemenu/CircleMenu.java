@@ -243,6 +243,11 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
         this.mListener = listener;
     }
 
+    public void toggle() {
+        mMenuController.toggle();
+    }
+
+
     public boolean isExpanded() {
         return mMenuController.isExpanded();
     }
