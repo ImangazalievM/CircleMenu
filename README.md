@@ -1,5 +1,9 @@
 # CircleMenu
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-CircleMenu-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5361)
+![minSdkVersion 21](https://img.shields.io/badge/minSdkVersion-15-blue.svg)
+[ ![Download](https://api.bintray.com/packages/imangazaliev/maven/circlemenu/images/download.svg) ](https://bintray.com/imangazaliev/maven/circlemenu/_latestVersion)
+
 <img src="https://github.com/ImangazalievM/CircleMenu/blob/master/art/splash.png" width="100%">
 
 CircleMenu is a simple, elegant menu with a circular layout.
@@ -26,7 +30,7 @@ Add to your layout xml-file:
         android:id="@+id/circleMenu"
         >
 
-        <com.imangazaliev.circlemenu.MenuButton
+        <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +39,7 @@ Add to your layout xml-file:
             app:icon="@drawable/ic_favorite"
             />
 
-        <com.imangazaliev.circlemenu.MenuButton
+        <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +47,7 @@ Add to your layout xml-file:
             app:colorPressed="#43A047"
             app:icon="@drawable/ic_search"/>
 
-        <com.imangazaliev.circlemenu.MenuButton
+        <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/alert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
