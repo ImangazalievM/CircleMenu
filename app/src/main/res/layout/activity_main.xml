@@ -2,15 +2,13 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#212121"
-    >
+                android:background="#212121">
 
     <com.imangazaliev.circlemenu.CircleMenu
-        android:id="@+id/circleMenu"
+        android:id="@+id/circle_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        >
+        android:layout_centerInParent="true">
 
         <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/favorite"
@@ -18,8 +16,7 @@
             android:layout_height="wrap_content"
             app:colorNormal="#2196F3"
             app:colorPressed="#1E88E5"
-            app:icon="@drawable/ic_favorite"
-            />
+            app:icon="@drawable/ic_favorite" />
 
         <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/search"
@@ -52,6 +49,7 @@
             app:colorNormal="#FF9800"
             app:colorPressed="#FB8C00"
             app:icon="@drawable/ic_edit"/>
+
     </com.imangazaliev.circlemenu.CircleMenu>
 
 </RelativeLayout>

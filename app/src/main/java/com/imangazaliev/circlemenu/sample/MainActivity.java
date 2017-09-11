@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        CircleMenu circleMenu = (CircleMenu) findViewById(R.id.circleMenu);
+        CircleMenu circleMenu = (CircleMenu) findViewById(R.id.circle_menu);
         circleMenu.setOnItemClickListener(new CircleMenu.OnItemClickListener() {
             @Override
             public void onItemClick(CircleMenuButton menuButton) {
