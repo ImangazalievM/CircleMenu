@@ -21,15 +21,15 @@ import android.util.AttributeSet;
 
 public class CircleMenuButton extends AppCompatImageButton {
 
-    private int mColorNormal;
-    private int mColorPressed;
-    private int mColorDisabled;
+    private int colorNormal;
+    private int colorPressed;
+    private int colorDisabled;
 
     @DrawableRes
-    private int mIcon;
-    private Drawable mIconDrawable;
+    private int icon;
+    private Drawable iconDrawable;
 
-    private int mButtonSize;
+    private int buttonSize;
 
     public CircleMenuButton(Context context) {
         this(context, null);
@@ -47,30 +47,30 @@ public class CircleMenuButton extends AppCompatImageButton {
 
     void init(Context context, AttributeSet attributeSet) {
         TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.CircleMenuButton, 0, 0);
-        mColorNormal = attr.getColor(R.styleable.CircleMenuButton_colorNormal, getColor(R.color.circle_menu_button_color_normal));
-        mColorPressed = attr.getColor(R.styleable.CircleMenuButton_colorPressed, getColor(R.color.circle_menu_button_color_pressed));
-        mColorDisabled = attr.getColor(R.styleable.CircleMenuButton_colorDisabled, getColor(R.color.circle_menu_button_color_disabled));
-        mIcon = attr.getResourceId(R.styleable.CircleMenuButton_icon, 0);
+        colorNormal = attr.getColor(R.styleable.CircleMenuButton_colorNormal, getColor(R.color.circle_menu_button_color_normal));
+        colorPressed = attr.getColor(R.styleable.CircleMenuButton_colorPressed, getColor(R.color.circle_menu_button_color_pressed));
+        colorDisabled = attr.getColor(R.styleable.CircleMenuButton_colorDisabled, getColor(R.color.circle_menu_button_color_disabled));
+        icon = attr.getResourceId(R.styleable.CircleMenuButton_icon, 0);
         attr.recycle();
 
-        mButtonSize = (int) getDimension(R.dimen.circle_menu_button_size);
+        buttonSize = (int) getDimension(R.dimen.circle_menu_button_size);
 
         updateBackground();
     }
 
 
     public void setIcon(@DrawableRes int icon) {
-        if (mIcon != icon) {
-            mIcon = icon;
-            mIconDrawable = null;
+        if (this.icon != icon) {
+            this.icon = icon;
+            iconDrawable = null;
             updateBackground();
         }
     }
 
     public void setIconDrawable(@NonNull Drawable iconDrawable) {
-        if (mIconDrawable != iconDrawable) {
-            mIcon = 0;
-            mIconDrawable = iconDrawable;
+        if (this.iconDrawable != iconDrawable) {
+            icon = 0;
+            this.iconDrawable = iconDrawable;
             updateBackground();
         }
     }
@@ -79,7 +79,7 @@ public class CircleMenuButton extends AppCompatImageButton {
      * @return the current Color for normal state.
      */
     public int getColorNormal() {
-        return mColorNormal;
+        return colorNormal;
     }
 
     public void setColorNormalResId(@ColorRes int colorNormal) {
@@ -87,8 +87,8 @@ public class CircleMenuButton extends AppCompatImageButton {
     }
 
     public void setColorNormal(int color) {
-        if (mColorNormal != color) {
-            mColorNormal = color;
+        if (colorNormal != color) {
+            colorNormal = color;
             updateBackground();
         }
     }
@@ -97,7 +97,7 @@ public class CircleMenuButton extends AppCompatImageButton {
      * @return the current color for pressed state.
      */
     public int getColorPressed() {
-        return mColorPressed;
+        return colorPressed;
     }
 
     public void setColorPressedResId(@ColorRes int colorPressed) {
@@ -105,8 +105,8 @@ public class CircleMenuButton extends AppCompatImageButton {
     }
 
     public void setColorPressed(int color) {
-        if (mColorPressed != color) {
-            mColorPressed = color;
+        if (colorPressed != color) {
+            colorPressed = color;
             updateBackground();
         }
     }
@@ -115,7 +115,7 @@ public class CircleMenuButton extends AppCompatImageButton {
      * @return the current color for disabled state.
      */
     public int getColorDisabled() {
-        return mColorDisabled;
+        return colorDisabled;
     }
 
     public void setColorDisabledResId(@ColorRes int colorDisabled) {
@@ -123,8 +123,8 @@ public class CircleMenuButton extends AppCompatImageButton {
     }
 
     public void setColorDisabled(int color) {
-        if (mColorDisabled != color) {
-            mColorDisabled = color;
+        if (colorDisabled != color) {
+            colorDisabled = color;
             updateBackground();
         }
     }
@@ -140,7 +140,7 @@ public class CircleMenuButton extends AppCompatImageButton {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(mButtonSize, mButtonSize);
+        setMeasuredDimension(buttonSize, buttonSize);
     }
 
     void updateBackground() {
@@ -149,10 +149,10 @@ public class CircleMenuButton extends AppCompatImageButton {
     }
 
     Drawable getIconDrawable() {
-        if (mIconDrawable != null) {
-            return mIconDrawable;
-        } else if (mIcon != 0) {
-            return getResources().getDrawable(mIcon);
+        if (iconDrawable != null) {
+            return iconDrawable;
+        } else if (icon != 0) {
+            return getResources().getDrawable(icon);
         } else {
             return new ColorDrawable(Color.TRANSPARENT);
         }
@@ -160,9 +160,9 @@ public class CircleMenuButton extends AppCompatImageButton {
 
     private StateListDrawable createBackgroundDrawable() {
         StateListDrawable drawable = new StateListDrawable();
-        drawable.addState(new int[]{-android.R.attr.state_enabled}, createCircleDrawable(mColorDisabled));
-        drawable.addState(new int[]{android.R.attr.state_pressed}, createCircleDrawable(mColorPressed));
-        drawable.addState(new int[]{}, createCircleDrawable(mColorNormal));
+        drawable.addState(new int[]{-android.R.attr.state_enabled}, createCircleDrawable(colorDisabled));
+        drawable.addState(new int[]{android.R.attr.state_pressed}, createCircleDrawable(colorPressed));
+        drawable.addState(new int[]{}, createCircleDrawable(colorNormal));
         return drawable;
     }
 

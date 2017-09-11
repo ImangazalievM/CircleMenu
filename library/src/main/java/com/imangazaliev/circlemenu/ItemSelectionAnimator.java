@@ -12,7 +12,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
 public class ItemSelectionAnimator {
@@ -33,47 +32,47 @@ public class ItemSelectionAnimator {
         void redrawView();
     }
 
-    private int mCircleColor, mCircleAlpha;
-    private float mStartAngle, mCurrentCircleAngle;
+    private int circleColor, circleAlpha;
+    private float startAngle, currentCircleAngle;
 
-    private float mOriginalCircleStrokeWidth, mCurrentCircleStrokeWidth;
-    private float mOriginalCircleRadius, mCurrentCircleRadius;
-    private int mMenuWidth, mMenuHeight;
-    private RectF mCircleRect = new RectF();
+    private float originalCircleStrokeWidth, currentCircleStrokeWidth;
+    private float originalCircleRadius, currentCircleRadius;
+    private int menuWidth, menuHeight;
+    private RectF circleRect = new RectF();
 
-    private Bitmap mCurrentIconBitmap;
-    private Rect mIconSourceRect;
-    private RectF mIconRect = new RectF();
+    private Bitmap currentIconBitmap;
+    private Rect iconSourceRect;
+    private RectF iconRect = new RectF();
 
-    private boolean mAnimationIsActive;
+    private boolean animationIsActive;
 
-    private MenuController mMenuController;
-    private AnimationDrawController mAnimationDrawController;
+    private MenuController menuController;
+    private AnimationDrawController animationDrawController;
 
     public ItemSelectionAnimator(MenuController menuController, AnimationDrawController animationDrawController) {
-        this.mMenuController = menuController;
-        this.mAnimationDrawController = animationDrawController;
-        this.mAnimationIsActive = false;
-        this.mCurrentCircleAngle = START_CIRCLE_ANGLE;
-        this.mCircleAlpha = ALPHA_OPAQUE;
+        this.menuController = menuController;
+        this.animationDrawController = animationDrawController;
+        this.animationIsActive = false;
+        this.currentCircleAngle = START_CIRCLE_ANGLE;
+        this.circleAlpha = ALPHA_OPAQUE;
     }
 
     public void setCircleRadius(float circleRadius, int menuWidth, int menuHeight) {
-        this.mOriginalCircleRadius = circleRadius;
-        this.mCurrentCircleRadius = mOriginalCircleRadius;
-        this.mMenuWidth = menuWidth;
-        this.mMenuHeight = menuHeight;
+        this.originalCircleRadius = circleRadius;
+        this.currentCircleRadius = originalCircleRadius;
+        this.menuWidth = menuWidth;
+        this.menuHeight = menuHeight;
     }
 
     public void onItemClick(CircleMenuButton menuButton, MenuButtonPoint menuButtonPoint) {
-        mCircleColor = menuButton.getColorNormal();
-        mOriginalCircleStrokeWidth = menuButton.getWidth();
-        mCurrentCircleStrokeWidth = mOriginalCircleStrokeWidth;
-        mStartAngle = menuButtonPoint.angle;
+        circleColor = menuButton.getColorNormal();
+        originalCircleStrokeWidth = menuButton.getWidth();
+        currentCircleStrokeWidth = originalCircleStrokeWidth;
+        startAngle = menuButtonPoint.angle;
 
         Drawable iconDrawable = menuButton.getDrawable();
-        mCurrentIconBitmap = getIconBitmap(iconDrawable);
-        mIconSourceRect = iconDrawable.getBounds();
+        currentIconBitmap = getIconBitmap(iconDrawable);
+        iconSourceRect = iconDrawable.getBounds();
 
         startCircleDrawingAnimation();
     }
@@ -100,7 +99,7 @@ public class ItemSelectionAnimator {
 
     private void startCircleDrawingAnimation() {
         onAnimationStarted();
-        mMenuController.setState(MenuState.SELECT_ANIMATION_STARTED);
+        menuController.setState(MenuState.SELECT_ANIMATION_STARTED);
 
         ValueAnimator circleAngleAnimation = ValueAnimator.ofFloat(START_CIRCLE_ANGLE, END_CIRCLE_ANGLE);
         circleAngleAnimation.setDuration(SELECT_ANIMATION_DURATION);
@@ -108,11 +107,11 @@ public class ItemSelectionAnimator {
         circleAngleAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                mCurrentCircleAngle = (float) animation.getAnimatedValue();
-                mAnimationDrawController.redrawView();
+                currentCircleAngle = (float) animation.getAnimatedValue();
+                animationDrawController.redrawView();
 
-                if (mCurrentCircleAngle == END_CIRCLE_ANGLE) {
-                    mMenuController.setState(MenuState.SELECT_ANIMATION_FINISHED);
+                if (currentCircleAngle == END_CIRCLE_ANGLE) {
+                    menuController.setState(MenuState.SELECT_ANIMATION_FINISHED);
                     startExitAnimation();
                 }
 
@@ -125,7 +124,7 @@ public class ItemSelectionAnimator {
     }
 
     private void startExitAnimation() {
-        mMenuController.setState(MenuState.EXIT_ANIMATION_STARTED);
+        menuController.setState(MenuState.EXIT_ANIMATION_STARTED);
 
         AnimatorSet animatorSet = new AnimatorSet();
 
@@ -136,17 +135,17 @@ public class ItemSelectionAnimator {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float animationValue = (float) animation.getAnimatedValue();
-                mCurrentCircleRadius = mOriginalCircleRadius * animationValue;
-                mCurrentCircleStrokeWidth = mOriginalCircleStrokeWidth * animationValue;
-                mAnimationDrawController.redrawView();
+                currentCircleRadius = originalCircleRadius * animationValue;
+                currentCircleStrokeWidth = originalCircleStrokeWidth * animationValue;
+                animationDrawController.redrawView();
 
                 if (animationValue == END_CIRCLE_SIZE) {
-                    mCurrentCircleAngle = START_CIRCLE_ANGLE;
-                    mCurrentCircleRadius = mOriginalCircleRadius;
-                    mCurrentCircleStrokeWidth = mOriginalCircleStrokeWidth;
-                    mAnimationDrawController.redrawView();
+                    currentCircleAngle = START_CIRCLE_ANGLE;
+                    currentCircleRadius = originalCircleRadius;
+                    currentCircleStrokeWidth = originalCircleStrokeWidth;
+                    animationDrawController.redrawView();
 
-                    mMenuController.setState(MenuState.EXIT_ANIMATION_FINISHED);
+                    menuController.setState(MenuState.EXIT_ANIMATION_FINISHED);
                     onAnimationFinished();
                 }
             }
@@ -161,10 +160,10 @@ public class ItemSelectionAnimator {
         circleAlphaAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                mCircleAlpha = (int) animation.getAnimatedValue();
+                circleAlpha = (int) animation.getAnimatedValue();
 
-                if (mCircleAlpha == ALPHA_TRANSPARENT) {
-                    mCircleAlpha = ALPHA_OPAQUE;
+                if (circleAlpha == ALPHA_TRANSPARENT) {
+                    circleAlpha = ALPHA_OPAQUE;
                 }
             }
 
@@ -176,15 +175,15 @@ public class ItemSelectionAnimator {
     }
 
     private void onAnimationStarted() {
-        mAnimationIsActive = true;
+        animationIsActive = true;
     }
 
     private void onAnimationFinished() {
-        mAnimationIsActive = false;
+        animationIsActive = false;
     }
 
     public void onDraw(Canvas canvas) {
-        if (!mAnimationIsActive) {
+        if (!animationIsActive) {
             return;
         }
 
@@ -193,43 +192,43 @@ public class ItemSelectionAnimator {
     }
 
     private void drawCircle(Canvas canvas) {
-        int horizontalCenter = mMenuWidth / 2;
-        int verticalCenter = mMenuHeight / 2;
+        int horizontalCenter = menuWidth / 2;
+        int verticalCenter = menuHeight / 2;
 
-        int left = (int) (horizontalCenter - mCurrentCircleRadius);
-        int top = (int) (verticalCenter - mCurrentCircleRadius);
-        int right = (int) (horizontalCenter + mCurrentCircleRadius);
-        int bottom = (int) (verticalCenter + mCurrentCircleRadius);
+        int left = (int) (horizontalCenter - currentCircleRadius);
+        int top = (int) (verticalCenter - currentCircleRadius);
+        int right = (int) (horizontalCenter + currentCircleRadius);
+        int bottom = (int) (verticalCenter + currentCircleRadius);
 
-        mCircleRect.set(left, top, right, bottom);
+        circleRect.set(left, top, right, bottom);
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(mCircleColor);
-        paint.setStrokeWidth(mCurrentCircleStrokeWidth);
+        paint.setColor(circleColor);
+        paint.setStrokeWidth(currentCircleStrokeWidth);
         paint.setAntiAlias(true);
         paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setAlpha(mCircleAlpha);
+        paint.setAlpha(circleAlpha);
 
-        canvas.drawArc(mCircleRect, mStartAngle, mCurrentCircleAngle, false, paint);
+        canvas.drawArc(circleRect, startAngle, currentCircleAngle, false, paint);
     }
 
     private void drawIcon(Canvas canvas) {
-        if (mCurrentIconBitmap == null || mCurrentCircleAngle == END_CIRCLE_ANGLE) {
+        if (currentIconBitmap == null || currentCircleAngle == END_CIRCLE_ANGLE) {
             return;
         }
 
-        float iconPadding = mOriginalCircleRadius + mOriginalCircleStrokeWidth / 2;
-        float left = iconPadding + Math.round((mOriginalCircleStrokeWidth / 2.0) + mOriginalCircleRadius * Math.cos(Math.toRadians(mStartAngle + mCurrentCircleAngle)));
-        float top = iconPadding + Math.round((mOriginalCircleStrokeWidth / 2.0) + mOriginalCircleRadius * Math.sin(Math.toRadians(mStartAngle + mCurrentCircleAngle)));
+        float iconPadding = originalCircleRadius + originalCircleStrokeWidth / 2;
+        float left = iconPadding + Math.round((originalCircleStrokeWidth / 2.0) + originalCircleRadius * Math.cos(Math.toRadians(startAngle + currentCircleAngle)));
+        float top = iconPadding + Math.round((originalCircleStrokeWidth / 2.0) + originalCircleRadius * Math.sin(Math.toRadians(startAngle + currentCircleAngle)));
 
-        left += mIconSourceRect.right / 2;
-        top += mIconSourceRect.bottom / 2;
+        left += iconSourceRect.right / 2;
+        top += iconSourceRect.bottom / 2;
 
-        float right = left + mIconSourceRect.right;
-        float bottom = top + mIconSourceRect.bottom;
+        float right = left + iconSourceRect.right;
+        float bottom = top + iconSourceRect.bottom;
 
-        mIconRect.set(left, top, right, bottom);
-        canvas.drawBitmap(mCurrentIconBitmap, mIconSourceRect, mIconRect, null);
+        iconRect.set(left, top, right, bottom);
+        canvas.drawBitmap(currentIconBitmap, iconSourceRect, iconRect, null);
     }
 
 }

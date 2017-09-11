@@ -15,13 +15,13 @@ import android.view.animation.OvershootInterpolator;
 
 public class CenterMenuButton extends CircleMenuButton {
 
-    private boolean mExpanded;
+    private boolean expanded;
     private AnimatorSet preLollipopAnimationSet;
 
     public CenterMenuButton(Context context) {
         super(context);
 
-        this.mExpanded = false;
+        this.expanded = false;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class CenterMenuButton extends CircleMenuButton {
     }
 
     public void setExpanded(boolean isExpanded) {
-        mExpanded = isExpanded;
+        expanded = isExpanded;
         if (isVectorAnimationSupported()) {
             startVectorAnimation(isExpanded);
         } else {
@@ -83,7 +83,7 @@ public class CenterMenuButton extends CircleMenuButton {
         scaleInX.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                CenterMenuButton.this.setImageResource(mExpanded ? R.drawable.ic_close_vector : R.drawable.ic_menu_vector);
+                CenterMenuButton.this.setImageResource(expanded ? R.drawable.ic_close_vector : R.drawable.ic_menu_vector);
             }
         });
 

@@ -20,16 +20,16 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
     }
 
     // Sizes of the ViewGroup
-    private float mRadius = -1;
-    private int mCircleStartAngle;
+    private float radius = -1;
+    private int circleStartAngle;
 
-    private CenterMenuButton mCenterButton;
+    private CenterMenuButton centerButton;
 
-    private MenuController mMenuController;
-    private ItemSelectionAnimator mItemSelectionAnimator;
+    private MenuController menuController;
+    private ItemSelectionAnimator itemSelectionAnimator;
 
-    private OnStateUpdateListener mListener;
-    private OnItemClickListener mOnItemClickListener;
+    private OnStateUpdateListener stateUpdateListener;
+    private OnItemClickListener onItemClickListener;
 
     public CircleMenu(Context context) {
         this(context, null);
@@ -37,26 +37,26 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
 
     public CircleMenu(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
+        init(attrs);
     }
 
     public CircleMenu(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        init(context, attrs);
+        init(attrs);
     }
 
-    private void init(Context context, AttributeSet attrs) {
+    private void init(AttributeSet attrs) {
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.CircleMenu);
         try {
-            mCircleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_start_angle, getResources().getInteger(R.integer.circle_menu_start_angle));
-            mRadius = typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
+            circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_start_angle, getResources().getInteger(R.integer.circle_menu_start_angle));
+            radius = typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
         } finally {
             typedArray.recycle();
         }
 
-        mMenuController = new MenuController(this);
-        mItemSelectionAnimator = new ItemSelectionAnimator(mMenuController, this);
+        menuController = new MenuController(this);
+        itemSelectionAnimator = new ItemSelectionAnimator(menuController, this);
     }
 
     @Override
@@ -70,22 +70,22 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
     private void addChildrenToController() {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
-            if (child != mCenterButton) {
-                mMenuController.addButton((CircleMenuButton) child);
+            if (child != centerButton) {
+                menuController.addButton((CircleMenuButton) child);
             }
         }
     }
 
     private void createCenterButton(Context context) {
-        mCenterButton = new CenterMenuButton(context);
-        mCenterButton.setOnClickListener(new OnClickListener() {
+        centerButton = new CenterMenuButton(context);
+        centerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMenuController.toggle();
+                menuController.toggle();
             }
         });
 
-        addView(mCenterButton, super.generateDefaultLayoutParams());
+        addView(centerButton, super.generateDefaultLayoutParams());
     }
 
     @Override
@@ -153,41 +153,41 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
         int circleHeight = getHeight();
         int circleWidth = getWidth();
 
-        int centerButtonWidth = mCenterButton.getMeasuredWidth();
-        int centerButtonHeight = mCenterButton.getMeasuredHeight();
+        int centerButtonWidth = centerButton.getMeasuredWidth();
+        int centerButtonHeight = centerButton.getMeasuredHeight();
         int centerButtonLeft = Math.round((float) ((circleWidth / 2.0) - centerButtonWidth / 2.0));
         int centerButtonTop = Math.round((float) ((circleHeight / 2.0) - centerButtonHeight / 2.0));
-        mCenterButton.layout(centerButtonLeft, centerButtonTop, centerButtonLeft + centerButtonWidth, centerButtonTop + centerButtonHeight);
+        centerButton.layout(centerButtonLeft, centerButtonTop, centerButtonLeft + centerButtonWidth, centerButtonTop + centerButtonHeight);
 
-        mMenuController.calculateButtonsVertices(mRadius, mCircleStartAngle, circleWidth, circleHeight, centerButtonLeft, centerButtonTop);
-        mItemSelectionAnimator.setCircleRadius(mRadius, circleWidth, circleHeight);
+        menuController.calculateButtonsVertices(radius, circleStartAngle, circleWidth, circleHeight, centerButtonLeft, centerButtonTop);
+        itemSelectionAnimator.setCircleRadius(radius, circleWidth, circleHeight);
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
-        mItemSelectionAnimator.onDraw(canvas);
+        itemSelectionAnimator.onDraw(canvas);
     }
 
     @Override
     public void onStartExpanding() {
-        mCenterButton.setExpanded(true);
-        mCenterButton.setClickable(false);
+        centerButton.setExpanded(true);
+        centerButton.setClickable(false);
     }
 
     @Override
     public void onExpanded() {
-        mCenterButton.setClickable(true);
+        centerButton.setClickable(true);
 
-        if (mListener != null) {
-            mListener.onMenuExpanded();
+        if (stateUpdateListener != null) {
+            stateUpdateListener.onMenuExpanded();
         }
     }
 
     @Override
     public void onSelectAnimationStarted() {
-        mCenterButton.setClickable(false);
+        centerButton.setClickable(false);
     }
 
     @Override
@@ -202,31 +202,31 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
 
     @Override
     public void onExitAnimationFinished() {
-        mCenterButton.setClickable(true);
+        centerButton.setClickable(true);
     }
 
     @Override
     public void onStartCollapsing() {
-        mCenterButton.setExpanded(false);
-        mCenterButton.setClickable(false);
+        centerButton.setExpanded(false);
+        centerButton.setClickable(false);
     }
 
     @Override
     public void onCollapsed() {
-        mCenterButton.setClickable(true);
+        centerButton.setClickable(true);
 
-        if (mListener != null) {
-            mListener.onMenuCollapsed();
+        if (stateUpdateListener != null) {
+            stateUpdateListener.onMenuCollapsed();
         }
     }
 
     @Override
     public void onItemClick(CircleMenuButton menuButton) {
-        mCenterButton.setExpanded(false);
-        mItemSelectionAnimator.onItemClick(menuButton, mMenuController.getButtonsPoint(menuButton));
+        centerButton.setExpanded(false);
+        itemSelectionAnimator.onItemClick(menuButton, menuController.getButtonsPoint(menuButton));
 
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener.onItemClick(menuButton);
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClick(menuButton);
         }
     }
 
@@ -236,25 +236,25 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.mOnItemClickListener = onItemClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
 
     public void setStateUpdateListener(OnStateUpdateListener listener) {
-        this.mListener = listener;
+        this.stateUpdateListener = listener;
     }
 
     public void toggle() {
-        mMenuController.toggle();
+        menuController.toggle();
     }
 
 
     public boolean isExpanded() {
-        return mMenuController.isExpanded();
+        return menuController.isExpanded();
     }
 
     public void addButton(CircleMenuButton menuButton) {
         addView(menuButton, getChildCount() - 1);
-        mMenuController.addButton(menuButton);
+        menuController.addButton(menuButton);
     }
 
 }
