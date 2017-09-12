@@ -41,7 +41,6 @@ class MenuController {
     private List<CircleMenuButton> buttons = new ArrayList<>();
     private HashMap<CircleMenuButton, MenuButtonPoint> buttonsPositions = new HashMap<>();
     private final ControllerListener listener;
-    private boolean hintsEnabled;
 
     private View.OnClickListener onButtonItemClickListener;
     private View.OnLongClickListener onButtonItemLongClickListener;
@@ -51,7 +50,6 @@ class MenuController {
 
     MenuController(ControllerListener listener, final boolean hintsEnabled) {
         this.listener = listener;
-        this.hintsEnabled = hintsEnabled;
         this.state = MenuState.COLLAPSED;
         this.onButtonItemClickListener = new View.OnClickListener() {
             @Override
