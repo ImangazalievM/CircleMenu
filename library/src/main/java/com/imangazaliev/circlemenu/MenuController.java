@@ -37,29 +37,30 @@ public class MenuController {
 
     private List<CircleMenuButton> buttons = new ArrayList<>();
     private HashMap<CircleMenuButton, MenuButtonPoint> buttonsPositions = new HashMap<>();
-
-    private int centerPositionX, centerPositionY;
+    private final ControllerListener listener;
+    private View.OnClickListener onButtonItemClickListener;
 
     @MenuState
     private int state;
 
-    private final ControllerListener listener;
-
-
     public MenuController(ControllerListener listener) {
         this.listener = listener;
         this.state = MenuState.COLLAPSED;
+        this.onButtonItemClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClick((CircleMenuButton) v);
+            }
+        };
     }
 
-    public void calculateButtonsVertices(float radius, int startAngle, int circleWidth, int circleHeight, int centerX, int centerY) {
-        int left, top, childWidth, childHeight;
+    public void calculateButtonsVertices(float radius, int startAngle, int circleWidth, int circleHeight) {
+        int collapsedX, collapsedY, expandedX, expandedY;
+        int buttonWidth, buttonHeight;
         int childCount = getButtonsCount();
 
         float angleStep = 360.0f / (childCount);
         float lastAngle = startAngle;
-
-        centerPositionX = centerX;
-        centerPositionY = centerY;
 
         for (int i = 0; i < childCount; i++) {
             final CircleMenuButton button = buttons.get(i);
@@ -68,70 +69,47 @@ public class MenuController {
                 continue;
             }
 
-            childWidth = button.getMeasuredWidth();
-            childHeight = button.getMeasuredHeight();
+            buttonWidth = button.getMeasuredWidth();
+            buttonHeight = button.getMeasuredHeight();
 
+            expandedX = Math.round((float) (((circleWidth / 2.0) - buttonWidth / 2.0) + radius * Math.cos(Math.toRadians(lastAngle))));
+            expandedY = Math.round((float) (((circleHeight / 2.0) - buttonHeight / 2.0) + radius * Math.sin(Math.toRadians(lastAngle))));
+            collapsedX = Math.round((float) ((circleWidth / 2.0) - buttonWidth / 2.0));
+            collapsedY = Math.round((float) ((circleHeight / 2.0) - buttonHeight / 2.0));
 
-            final float currentAngle = lastAngle;
-            left = Math.round((float) (((circleWidth / 2.0) - childWidth / 2.0) + radius * Math.cos(Math.toRadians(currentAngle))));
-            top = Math.round((float) (((circleHeight / 2.0) - childHeight / 2.0) + radius * Math.sin(Math.toRadians(currentAngle))));
+            MenuButtonPoint menuButtonPoint = new MenuButtonPoint(collapsedX, collapsedY, expandedX, expandedY, lastAngle);
+            buttonsPositions.put(button, menuButtonPoint);
 
-            if (currentAngle > 360) {
+            if (lastAngle > 360) {
                 lastAngle -= 360;
-            } else if (currentAngle < 0) {
+            } else if (lastAngle < 0) {
                 lastAngle += 360;
             }
-            buttonsPositions.put(button, new MenuButtonPoint(left, top, currentAngle));
 
-            if (state == MenuState.COLLAPSED) {
-                left = Math.round((float) ((circleWidth / 2.0) - childWidth / 2.0));
-                top = Math.round((float) ((circleHeight / 2.0) - childHeight / 2.0));
-                button.layout(left, top, left + childWidth, top + childHeight);
-            } else {
-                button.layout(left, top, left + childWidth, top + childHeight);
-            }
+            button.layout(collapsedX, collapsedY, collapsedX + buttonWidth, collapsedY + buttonHeight);
 
             lastAngle += angleStep;
         }
+
     }
 
     public void toggle() {
         if (isExpanded()) {
-            collapse();
-        } else {
-            expand();
-        }
-    }
-
-    private void collapse() {
-        if (isExpanded()) {
             startCollapseAnimation();
-        }
-    }
-
-    private void expand() {
-        if (!isExpanded()) {
+        } else {
             startExpandAnimation();
         }
     }
 
     private void startCollapseAnimation() {
+        setButtonsStartPosition(false);
         setState(MenuState.COLLAPSE_ANIMATION_STARTED);
 
-        for (int i = 0; i < getButtonsCount(); i++) {
-            final CircleMenuButton button = buttons.get(i);
+        for (final CircleMenuButton button : buttons) {
             MenuButtonPoint buttonPosition = buttonsPositions.get(button);
 
-            float startPositionX = buttonPosition.x;
-            float endPositionX = centerPositionX;
-
-            float startPositionY = buttonPosition.y;
-            float endPositionY = centerPositionY;
-
-            button.setX(startPositionX);
-            button.setY(startPositionY);
-
-            ValueAnimator buttonAnimatorX = ValueAnimator.ofFloat(startPositionX, endPositionX);
+            //x axis animation
+            ValueAnimator buttonAnimatorX = ValueAnimator.ofFloat(buttonPosition.expandedX, buttonPosition.collapsedX);
             buttonAnimatorX.setInterpolator(new DecelerateInterpolator());
             buttonAnimatorX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -144,14 +122,13 @@ public class MenuController {
             buttonAnimatorX.setStartDelay(TOGGLE_ANIMATION_DELAY);
             buttonAnimatorX.start();
 
-
-            ValueAnimator buttonAnimatorY = ValueAnimator.ofFloat(startPositionY, endPositionY);
+            //y axis animation
+            ValueAnimator buttonAnimatorY = ValueAnimator.ofFloat(buttonPosition.expandedY, buttonPosition.collapsedY);
             buttonAnimatorY.setInterpolator(new DecelerateInterpolator());
             buttonAnimatorY.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float animatedValue = (float) animation.getAnimatedValue();
-                    button.setY(animatedValue - button.getLayoutParams().height / 2);
+                    button.setY((float) animation.getAnimatedValue() - button.getLayoutParams().height / 2);
                     button.requestLayout();
                 }
             });
@@ -169,24 +146,14 @@ public class MenuController {
     }
 
     private void startExpandAnimation() {
+        setButtonsStartPosition(true);
         setState(MenuState.EXPAND_ANIMATION_STARTED);
 
-        showItems();
-        for (int i = 0; i < getButtonsCount(); i++) {
-            final CircleMenuButton button = buttons.get(i);
+        for (final CircleMenuButton button : buttons) {
             MenuButtonPoint buttonPosition = buttonsPositions.get(button);
 
-            float startPositionX = centerPositionX;
-            float endPositionX = buttonPosition.x;
-
-            float startPositionY = centerPositionY;
-            float endPositionY = buttonPosition.y;
-
-            button.setX(startPositionX);
-            button.setY(startPositionY);
-
             //x axis animation
-            ValueAnimator buttonAnimatorX = ValueAnimator.ofFloat(startPositionX, endPositionX);
+            ValueAnimator buttonAnimatorX = ValueAnimator.ofFloat(buttonPosition.collapsedX, buttonPosition.expandedX);
             buttonAnimatorX.setInterpolator(new DecelerateInterpolator());
             buttonAnimatorX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -200,13 +167,12 @@ public class MenuController {
             buttonAnimatorX.start();
 
             //y axis animation
-            ValueAnimator buttonAnimatorY = ValueAnimator.ofFloat(startPositionY, endPositionY);
+            ValueAnimator buttonAnimatorY = ValueAnimator.ofFloat(buttonPosition.collapsedY, buttonPosition.expandedY);
             buttonAnimatorY.setInterpolator(new DecelerateInterpolator());
             buttonAnimatorY.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float animatedValue = (float) animation.getAnimatedValue();
-                    button.setY(animatedValue - button.getLayoutParams().height / 2);
+                    button.setY((float) animation.getAnimatedValue() - button.getLayoutParams().height / 2);
                     button.requestLayout();
                 }
             });
@@ -223,11 +189,20 @@ public class MenuController {
         }, TOGGLE_ANIMATION_DURATION);
     }
 
+    private void setButtonsStartPosition(boolean collapsed) {
+        for (final CircleMenuButton button : buttons) {
+            MenuButtonPoint buttonPosition = buttonsPositions.get(button);
+            button.setX(collapsed ? buttonPosition.collapsedX : buttonPosition.expandedX);
+            button.setY(collapsed ? buttonPosition.collapsedY : buttonPosition.expandedY);
+        }
+    }
+
     public void setState(@MenuState int state) {
         this.state = state;
         switch (state) {
             case MenuState.EXPAND_ANIMATION_STARTED:
                 disableItems();
+                showItems();
                 listener.onStartExpanding();
                 break;
             case MenuState.EXPANDED:
@@ -265,12 +240,7 @@ public class MenuController {
 
     public void addButton(final CircleMenuButton menuButton) {
         buttons.add(menuButton);
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClick(menuButton);
-            }
-        });
+        menuButton.setOnClickListener(onButtonItemClickListener);
     }
 
     private void onItemClick(CircleMenuButton menuButton) {
@@ -310,6 +280,5 @@ public class MenuController {
     public MenuButtonPoint getButtonsPoint(CircleMenuButton menuButton) {
         return buttonsPositions.get(menuButton);
     }
-
 
 }

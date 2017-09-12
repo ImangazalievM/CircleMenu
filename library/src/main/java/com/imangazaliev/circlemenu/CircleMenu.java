@@ -155,11 +155,11 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
 
         int centerButtonWidth = centerButton.getMeasuredWidth();
         int centerButtonHeight = centerButton.getMeasuredHeight();
-        int centerButtonLeft = Math.round((float) ((circleWidth / 2.0) - centerButtonWidth / 2.0));
-        int centerButtonTop = Math.round((float) ((circleHeight / 2.0) - centerButtonHeight / 2.0));
-        centerButton.layout(centerButtonLeft, centerButtonTop, centerButtonLeft + centerButtonWidth, centerButtonTop + centerButtonHeight);
+        int centerButtonX = Math.round((float) ((circleWidth / 2.0) - centerButtonWidth / 2.0));
+        int centerButtonY = Math.round((float) ((circleHeight / 2.0) - centerButtonHeight / 2.0));
+        centerButton.layout(centerButtonX, centerButtonY, centerButtonX + centerButtonWidth, centerButtonY + centerButtonHeight);
 
-        menuController.calculateButtonsVertices(radius, circleStartAngle, circleWidth, circleHeight, centerButtonLeft, centerButtonTop);
+        menuController.calculateButtonsVertices(radius, circleStartAngle, circleWidth, circleHeight);
         itemSelectionAnimator.setCircleRadius(radius, circleWidth, circleHeight);
     }
 
@@ -246,7 +246,6 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
     public void toggle() {
         menuController.toggle();
     }
-
 
     public boolean isExpanded() {
         return menuController.isExpanded();
