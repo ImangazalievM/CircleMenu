@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MenuController {
+class MenuController {
 
     private static final int TOGGLE_ANIMATION_DELAY = 100;
     private static final int TOGGLE_ANIMATION_DURATION = 200;
 
-    public interface ControllerListener {
+    interface ControllerListener {
 
         void onStartCollapsing();
 
@@ -33,18 +33,25 @@ public class MenuController {
         void onExitAnimationFinished();
 
         void onItemClick(CircleMenuButton menuButton);
+
+        void onItemLongClick(CircleMenuButton menuButton);
+
     }
 
     private List<CircleMenuButton> buttons = new ArrayList<>();
     private HashMap<CircleMenuButton, MenuButtonPoint> buttonsPositions = new HashMap<>();
     private final ControllerListener listener;
+    private boolean hintsEnabled;
+
     private View.OnClickListener onButtonItemClickListener;
+    private View.OnLongClickListener onButtonItemLongClickListener;
 
     @MenuState
     private int state;
 
-    public MenuController(ControllerListener listener) {
+    MenuController(ControllerListener listener, final boolean hintsEnabled) {
         this.listener = listener;
+        this.hintsEnabled = hintsEnabled;
         this.state = MenuState.COLLAPSED;
         this.onButtonItemClickListener = new View.OnClickListener() {
             @Override
@@ -52,9 +59,16 @@ public class MenuController {
                 onItemClick((CircleMenuButton) v);
             }
         };
+        this.onButtonItemLongClickListener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onItemLongClick((CircleMenuButton) v);
+                return hintsEnabled;
+            }
+        };
     }
 
-    public void calculateButtonsVertices(float radius, int startAngle, int circleWidth, int circleHeight) {
+    void calculateButtonsVertices(float radius, int startAngle, int circleWidth, int circleHeight) {
         int collapsedX, collapsedY, expandedX, expandedY;
         int buttonWidth, buttonHeight;
         int childCount = getButtonsCount();
@@ -93,7 +107,7 @@ public class MenuController {
 
     }
 
-    public void toggle() {
+    void toggle() {
         if (isExpanded()) {
             startCollapseAnimation();
         } else {
@@ -197,7 +211,7 @@ public class MenuController {
         }
     }
 
-    public void setState(@MenuState int state) {
+    void setState(@MenuState int state) {
         this.state = state;
         switch (state) {
             case MenuState.EXPAND_ANIMATION_STARTED:
@@ -234,13 +248,14 @@ public class MenuController {
         }
     }
 
-    public boolean isExpanded() {
+    boolean isExpanded() {
         return state == MenuState.EXPANDED;
     }
 
-    public void addButton(final CircleMenuButton menuButton) {
+    void addButton(final CircleMenuButton menuButton) {
         buttons.add(menuButton);
         menuButton.setOnClickListener(onButtonItemClickListener);
+        menuButton.setOnLongClickListener(onButtonItemLongClickListener);
     }
 
     private void onItemClick(CircleMenuButton menuButton) {
@@ -249,35 +264,39 @@ public class MenuController {
         }
     }
 
-    public int getButtonsCount() {
+    private void onItemLongClick(CircleMenuButton menuButton) {
+            listener.onItemLongClick(menuButton);
+    }
+
+    private int getButtonsCount() {
         return buttons.size();
     }
 
-    public void disableItems() {
+    private void disableItems() {
         for (int i = 0; i < getButtonsCount(); i++) {
             buttons.get(i).setClickable(false);
         }
     }
 
-    public void enableItems() {
+    private void enableItems() {
         for (int i = 0; i < getButtonsCount(); i++) {
             buttons.get(i).setClickable(true);
         }
     }
 
-    public void hideItems() {
+    private void hideItems() {
         for (int i = 0; i < getButtonsCount(); i++) {
             buttons.get(i).setVisibility(View.GONE);
         }
     }
 
-    public void showItems() {
+    private void showItems() {
         for (int i = 0; i < getButtonsCount(); i++) {
             buttons.get(i).setVisibility(View.VISIBLE);
         }
     }
 
-    public MenuButtonPoint getButtonsPoint(CircleMenuButton menuButton) {
+    MenuButtonPoint getButtonsPoint(CircleMenuButton menuButton) {
         return buttonsPositions.get(menuButton);
     }
 

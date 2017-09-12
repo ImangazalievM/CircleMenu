@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class CircleMenu extends ViewGroup implements MenuController.ControllerListener, ItemSelectionAnimator.AnimationDrawController {
 
@@ -22,6 +23,7 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
     // Sizes of the ViewGroup
     private float radius = -1;
     private int circleStartAngle;
+    private boolean hintsEnabled;
 
     private CenterMenuButton centerButton;
 
@@ -51,11 +53,12 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
         try {
             circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_start_angle, getResources().getInteger(R.integer.circle_menu_start_angle));
             radius = typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
+            hintsEnabled = typedArray.getBoolean(R.styleable.CircleMenu_hintsEnabled, false);
         } finally {
             typedArray.recycle();
         }
 
-        menuController = new MenuController(this);
+        menuController = new MenuController(this, hintsEnabled);
         itemSelectionAnimator = new ItemSelectionAnimator(menuController, this);
     }
 
@@ -227,6 +230,13 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
 
         if (onItemClickListener != null) {
             onItemClickListener.onItemClick(menuButton);
+        }
+    }
+
+    @Override
+    public void onItemLongClick(CircleMenuButton menuButton) {
+        if (hintsEnabled) {
+            Toast.makeText(getContext(), menuButton.getHintText(), Toast.LENGTH_SHORT).show();
         }
     }
 

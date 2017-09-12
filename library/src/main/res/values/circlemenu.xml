@@ -6,6 +6,7 @@
         <attr name="select_animation_duration" format="integer"/>
         <attr name="exit_animation_duration" format="integer"/>
         <attr name="distance" format="integer"/>
+        <attr name="hintsEnabled" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="CircleMenuButton">
@@ -13,6 +14,7 @@
         <attr name="colorDisabled" format="color"/>
         <attr name="colorNormal" format="color"/>
         <attr name="icon" format="reference"/>
+        <attr name="hintText" format="string"/>
     </declare-styleable>
 
 

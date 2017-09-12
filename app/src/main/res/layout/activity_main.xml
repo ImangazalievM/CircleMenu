@@ -1,14 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#212121">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/snackbar_contaner"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#212121">
 
     <com.imangazaliev.circlemenu.CircleMenu
         android:id="@+id/circle_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        app:hintsEnabled="true">
 
         <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/favorite"
@@ -16,6 +18,7 @@
             android:layout_height="wrap_content"
             app:colorNormal="#2196F3"
             app:colorPressed="#1E88E5"
+            app:hintText="Favorite"
             app:icon="@drawable/ic_favorite" />
 
         <com.imangazaliev.circlemenu.CircleMenuButton
@@ -24,7 +27,8 @@
             android:layout_height="wrap_content"
             app:colorNormal="#4CAF50"
             app:colorPressed="#43A047"
-            app:icon="@drawable/ic_search"/>
+            app:hintText="Search"
+            app:icon="@drawable/ic_search" />
 
         <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/alert"
@@ -32,7 +36,8 @@
             android:layout_height="wrap_content"
             app:colorNormal="#F44336"
             app:colorPressed="#E53935"
-            app:icon="@drawable/ic_alert"/>
+            app:hintText="Alert"
+            app:icon="@drawable/ic_alert" />
 
         <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/place"
@@ -40,7 +45,8 @@
             android:layout_height="wrap_content"
             app:colorNormal="#9C27B0"
             app:colorPressed="#8E24AA"
-            app:icon="@drawable/ic_place"/>
+            app:hintText="Place"
+            app:icon="@drawable/ic_place" />
 
         <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/edit"
@@ -48,7 +54,8 @@
             android:layout_height="wrap_content"
             app:colorNormal="#FF9800"
             app:colorPressed="#FB8C00"
-            app:icon="@drawable/ic_edit"/>
+            app:hintText="Edit"
+            app:icon="@drawable/ic_edit" />
 
     </com.imangazaliev.circlemenu.CircleMenu>
 

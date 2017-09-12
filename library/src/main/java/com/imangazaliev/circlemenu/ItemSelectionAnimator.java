@@ -14,10 +14,10 @@ import android.graphics.drawable.VectorDrawable;
 import android.os.Build;
 import android.view.animation.DecelerateInterpolator;
 
-public class ItemSelectionAnimator {
+class ItemSelectionAnimator {
 
-    public static final int SELECT_ANIMATION_DURATION = 550;
-    public static final int EXIT_ANIMATION_DURATION = 600;
+    private static final int SELECT_ANIMATION_DURATION = 550;
+    private static final int EXIT_ANIMATION_DURATION = 600;
 
     private static final float START_CIRCLE_SIZE = 1;
     private static final float END_CIRCLE_SIZE = 1.3f;
@@ -28,7 +28,7 @@ public class ItemSelectionAnimator {
     private static final int ALPHA_TRANSPARENT = 0;
     private static final int ALPHA_OPAQUE = 255;
 
-    public interface AnimationDrawController {
+    interface AnimationDrawController {
         void redrawView();
     }
 
@@ -114,8 +114,6 @@ public class ItemSelectionAnimator {
                     menuController.setState(MenuState.SELECT_ANIMATION_FINISHED);
                     startExitAnimation();
                 }
-
-
             }
 
 
@@ -182,7 +180,7 @@ public class ItemSelectionAnimator {
         animationIsActive = false;
     }
 
-    public void onDraw(Canvas canvas) {
+    void onDraw(Canvas canvas) {
         if (!animationIsActive) {
             return;
         }
@@ -201,6 +199,7 @@ public class ItemSelectionAnimator {
         int bottom = (int) (verticalCenter + currentCircleRadius);
 
         circleRect.set(left, top, right, bottom);
+
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(circleColor);

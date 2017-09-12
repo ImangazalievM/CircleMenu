@@ -16,7 +16,7 @@ import java.lang.annotation.RetentionPolicy;
         MenuState.EXIT_ANIMATION_STARTED,
         MenuState.EXIT_ANIMATION_FINISHED
 })
-public @interface MenuState {
+@interface MenuState {
 
     int EXPAND_ANIMATION_STARTED = 1;
     int EXPANDED = 2;

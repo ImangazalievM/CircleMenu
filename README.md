@@ -15,7 +15,7 @@ CircleMenu is a simple, elegant menu with a circular layout.
 Add this to your app build.gradle:
 
 ```gradle
-compile 'com.github.imangazalievm:circlemenu:1.0.4'
+compile 'com.github.imangazalievm:circlemenu:1.1.0'
 ```
 
 # Usage
@@ -82,6 +82,18 @@ circleMenu.setStateUpdateListener(new CircleMenu.OnStateUpdateListener() {
 
     }
 });
+```
+
+Also you can enable hints, that shows in Toast by long pressing a button
+
+```java
+<com.imangazaliev.circlemenu.CircleMenu
+        ...
+        app:hintsEnabled="true">
+
+        ...
+
+</com.imangazaliev.circlemenu.CircleMenu>
 ```
 
 ## License

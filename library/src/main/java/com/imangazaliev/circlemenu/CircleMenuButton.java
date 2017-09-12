@@ -1,6 +1,5 @@
 package com.imangazaliev.circlemenu;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -16,6 +15,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 
@@ -24,11 +24,9 @@ public class CircleMenuButton extends AppCompatImageButton {
     private int colorNormal;
     private int colorPressed;
     private int colorDisabled;
-
-    @DrawableRes
-    private int icon;
+    private int iconId;
     private Drawable iconDrawable;
-
+    private String hintText;
     private int buttonSize;
 
     public CircleMenuButton(Context context) {
@@ -50,83 +48,13 @@ public class CircleMenuButton extends AppCompatImageButton {
         colorNormal = attr.getColor(R.styleable.CircleMenuButton_colorNormal, getColor(R.color.circle_menu_button_color_normal));
         colorPressed = attr.getColor(R.styleable.CircleMenuButton_colorPressed, getColor(R.color.circle_menu_button_color_pressed));
         colorDisabled = attr.getColor(R.styleable.CircleMenuButton_colorDisabled, getColor(R.color.circle_menu_button_color_disabled));
-        icon = attr.getResourceId(R.styleable.CircleMenuButton_icon, 0);
+        iconId = attr.getResourceId(R.styleable.CircleMenuButton_icon, 0);
+        hintText = attr.getString(R.styleable.CircleMenuButton_hintText);
         attr.recycle();
 
         buttonSize = (int) getDimension(R.dimen.circle_menu_button_size);
 
         updateBackground();
-    }
-
-
-    public void setIcon(@DrawableRes int icon) {
-        if (this.icon != icon) {
-            this.icon = icon;
-            iconDrawable = null;
-            updateBackground();
-        }
-    }
-
-    public void setIconDrawable(@NonNull Drawable iconDrawable) {
-        if (this.iconDrawable != iconDrawable) {
-            icon = 0;
-            this.iconDrawable = iconDrawable;
-            updateBackground();
-        }
-    }
-
-    /**
-     * @return the current Color for normal state.
-     */
-    public int getColorNormal() {
-        return colorNormal;
-    }
-
-    public void setColorNormalResId(@ColorRes int colorNormal) {
-        setColorNormal(getColor(colorNormal));
-    }
-
-    public void setColorNormal(int color) {
-        if (colorNormal != color) {
-            colorNormal = color;
-            updateBackground();
-        }
-    }
-
-    /**
-     * @return the current color for pressed state.
-     */
-    public int getColorPressed() {
-        return colorPressed;
-    }
-
-    public void setColorPressedResId(@ColorRes int colorPressed) {
-        setColorPressed(getColor(colorPressed));
-    }
-
-    public void setColorPressed(int color) {
-        if (colorPressed != color) {
-            colorPressed = color;
-            updateBackground();
-        }
-    }
-
-    /**
-     * @return the current color for disabled state.
-     */
-    public int getColorDisabled() {
-        return colorDisabled;
-    }
-
-    public void setColorDisabledResId(@ColorRes int colorDisabled) {
-        setColorDisabled(getColor(colorDisabled));
-    }
-
-    public void setColorDisabled(int color) {
-        if (colorDisabled != color) {
-            colorDisabled = color;
-            updateBackground();
-        }
     }
 
     int getColor(@ColorRes int id) {
@@ -149,13 +77,10 @@ public class CircleMenuButton extends AppCompatImageButton {
     }
 
     Drawable getIconDrawable() {
-        if (iconDrawable != null) {
-            return iconDrawable;
-        } else if (icon != 0) {
-            return getResources().getDrawable(icon);
-        } else {
-            return new ColorDrawable(Color.TRANSPARENT);
+        if (iconDrawable == null) {
+            iconDrawable = iconId != 0 ? getResources().getDrawable(iconId) : new ColorDrawable(Color.TRANSPARENT);
         }
+        return iconDrawable;
     }
 
     private StateListDrawable createBackgroundDrawable() {
@@ -175,14 +100,97 @@ public class CircleMenuButton extends AppCompatImageButton {
         return fillDrawable;
     }
 
-    @SuppressWarnings("deprecation")
-    @SuppressLint("NewApi")
     private void setBackgroundCompat(Drawable drawable) {
         if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
             setBackground(drawable);
         } else {
             setBackgroundDrawable(drawable);
         }
+    }
+
+    public void setColorNormalResId(@ColorRes int colorNormal) {
+        setColorNormal(getColor(colorNormal));
+    }
+
+    public void setColorNormal(int color) {
+        if (colorNormal != color) {
+            colorNormal = color;
+            updateBackground();
+        }
+    }
+
+    /**
+     * @return the current Color for normal state.
+     */
+    public int getColorNormal() {
+        return colorNormal;
+    }
+
+    public void setColorPressedResId(@ColorRes int colorPressedResId) {
+        setColorPressed(getColor(colorPressedResId));
+    }
+
+    public void setColorPressed(int color) {
+        if (colorPressed != color) {
+            colorPressed = color;
+            updateBackground();
+        }
+    }
+
+    /**
+     * @return the current color for pressed state.
+     */
+    public int getColorPressed() {
+        return colorPressed;
+    }
+
+    public void setColorDisabledResId(@ColorRes int colorDisabled) {
+        setColorDisabled(getColor(colorDisabled));
+    }
+
+    public void setColorDisabled(int color) {
+        if (colorDisabled != color) {
+            colorDisabled = color;
+            updateBackground();
+        }
+    }
+
+    /**
+     * @return the current color for disabled state.
+     */
+    public int getColorDisabled() {
+        return colorDisabled;
+    }
+
+    public void setIconResId(@DrawableRes int iconResId) {
+        if (this.iconId != iconResId) {
+            this.iconId = iconResId;
+            iconDrawable = null;
+            updateBackground();
+        }
+    }
+
+    public void setIconDrawable(@NonNull Drawable iconDrawable) {
+        if (this.iconDrawable != iconDrawable) {
+            iconId = 0;
+            this.iconDrawable = iconDrawable;
+            updateBackground();
+        }
+    }
+
+    public void setHintText(@StringRes int hintTextResId) {
+        this.hintText = getResources().getString(hintTextResId);
+    }
+
+    public void setHintText(String hintText) {
+        this.hintText = hintText;
+    }
+
+    /**
+     * @return text displayed when the button is pressed for a long time
+     */
+    public String getHintText() {
+        return hintText;
     }
 
 }
