@@ -86,10 +86,14 @@ circleMenu.setStateUpdateListener(new CircleMenu.OnStateUpdateListener() {
 
 Also you can enable hints, that shows in Toast by long pressing a button
 
-```java
+```xml
 <com.imangazaliev.circlemenu.CircleMenu
         ...
         app:hintsEnabled="true">
+
+        <com.imangazaliev.circlemenu.CircleMenuButton
+                   ...
+                   app:hintText="Place"/>
 
         ...
 
