@@ -84,10 +84,10 @@ class MenuController {
             buttonWidth = button.getMeasuredWidth();
             buttonHeight = button.getMeasuredHeight();
 
-            expandedX = Math.round((float) (((circleWidth / 2.0) - buttonWidth / 2.0) + radius * Math.cos(Math.toRadians(lastAngle))));
-            expandedY = Math.round((float) (((circleHeight / 2.0) - buttonHeight / 2.0) + radius * Math.sin(Math.toRadians(lastAngle))));
             collapsedX = Math.round((float) ((circleWidth / 2.0) - buttonWidth / 2.0));
             collapsedY = Math.round((float) ((circleHeight / 2.0) - buttonHeight / 2.0));
+            expandedX = Math.round((float) (collapsedX + radius * Math.cos(Math.toRadians(lastAngle))));
+            expandedY = Math.round((float) (collapsedY + radius * Math.sin(Math.toRadians(lastAngle))));
 
             MenuButtonPoint menuButtonPoint = new MenuButtonPoint(collapsedX, collapsedY, expandedX, expandedY, lastAngle);
             buttonsPositions.put(button, menuButtonPoint);
