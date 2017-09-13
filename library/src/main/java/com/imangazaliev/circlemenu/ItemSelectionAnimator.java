@@ -216,13 +216,12 @@ class ItemSelectionAnimator {
             return;
         }
 
-        float iconPadding = originalCircleRadius + originalCircleStrokeWidth / 2;
-        float left = iconPadding + Math.round((originalCircleStrokeWidth / 2.0) + originalCircleRadius * Math.cos(Math.toRadians(startAngle + currentCircleAngle)));
-        float top = iconPadding + Math.round((originalCircleStrokeWidth / 2.0) + originalCircleRadius * Math.sin(Math.toRadians(startAngle + currentCircleAngle)));
+        float angle = startAngle + currentCircleAngle;
+        float centerX = Math.round((float) ((menuWidth / 2.0) - currentIconBitmap.getWidth() / 2.0));
+        float centerY = Math.round((float) ((menuHeight / 2.0) - currentIconBitmap.getHeight() / 2.0));
 
-        left += iconSourceRect.right / 2;
-        top += iconSourceRect.bottom / 2;
-
+        float left = Math.round((float) (centerX + originalCircleRadius * Math.cos(Math.toRadians(angle))));
+        float top = Math.round((float) (centerY + originalCircleRadius * Math.sin(Math.toRadians(angle))));
         float right = left + iconSourceRect.right;
         float bottom = top + iconSourceRect.bottom;
 
