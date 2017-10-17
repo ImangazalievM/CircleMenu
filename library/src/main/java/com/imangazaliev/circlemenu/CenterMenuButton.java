@@ -20,7 +20,6 @@ public class CenterMenuButton extends CircleMenuButton {
 
     public CenterMenuButton(Context context) {
         super(context);
-
         this.expanded = false;
     }
 
@@ -96,5 +95,4 @@ public class CenterMenuButton extends CircleMenuButton {
     private boolean isVectorAnimationSupported() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
-
 }

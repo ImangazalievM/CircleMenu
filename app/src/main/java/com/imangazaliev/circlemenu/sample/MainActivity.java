@@ -1,15 +1,13 @@
 package com.imangazaliev.circlemenu.sample;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.imangazaliev.circlemenu.CircleMenu;
 import com.imangazaliev.circlemenu.CircleMenuButton;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,24 +16,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ViewGroup snackbarContainer = (ViewGroup) findViewById(R.id.snackbar_contaner);
-        CircleMenu circleMenu = (CircleMenu) findViewById(R.id.circle_menu);
-        circleMenu.setOnItemClickListener(new CircleMenu.OnItemClickListener() {
-            @Override
-            public void onItemClick(CircleMenuButton menuButton) {
-                Snackbar.make(snackbarContainer, menuButton.getHintText(), Snackbar.LENGTH_LONG).show();
-            }
-        });
+        final CircleMenu circleMenu = (CircleMenu) findViewById(R.id.circle_menu);
+        circleMenu.setConfimationButton(true);
 
-        circleMenu.setStateUpdateListener(new CircleMenu.OnStateUpdateListener() {
-            @Override
-            public void onMenuExpanded() {
-                Log.d("CircleMenuStatus", "Expanded");
-            }
+        for (int i = 0; i < 4; i ++) {
+            CircleMenuButton circleMenuButton =  new CircleMenuButton(this);
 
+            circleMenuButton.setColorNormal(R.color.color_normal);
+            circleMenuButton.setColorPressed(R.color.color_pressed);
+            circleMenuButton.setIconResId(R.drawable.ic_favorite);
+            circleMenuButton.setTypeCheck(true);
+            circleMenuButton.setMetaData(new DataGroup(i));
+
+            circleMenu.addButton(circleMenuButton);
+        }
+
+        circleMenu.setOnConfirmationListener(new CircleMenu.OnConfirmationListener() {
             @Override
-            public void onMenuCollapsed() {
-                Log.d("CircleMenuStatus", "Collapsed");
+            public void onConfirmation(List<Object> listData) {
+                for (int i =0; i< listData.size(); i++ ) {
+                    DataGroup dataGroup = (DataGroup) listData.get(i);
+                    Log.d("MainActivity", "ID: " + dataGroup.getIdGroup());
+                }
             }
         });
     }

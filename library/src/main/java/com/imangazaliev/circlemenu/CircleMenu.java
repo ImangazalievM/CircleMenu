@@ -3,12 +3,20 @@ package com.imangazaliev.circlemenu;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-public class CircleMenu extends ViewGroup implements MenuController.ControllerListener, ItemSelectionAnimator.AnimationDrawController {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+public class CircleMenu extends ViewGroup implements
+        MenuController.ControllerListener, ItemSelectionAnimator.AnimationDrawController {
 
     public interface OnItemClickListener {
         void onItemClick(CircleMenuButton menuButton);
@@ -20,10 +28,15 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
         void onMenuCollapsed();
     }
 
+    public interface OnConfirmationListener {
+        void onConfirmation(List<Object> listData);
+    }
+
     // Sizes of the ViewGroup
     private float radius = -1;
     private int circleStartAngle;
     private boolean hintsEnabled;
+    private boolean confirmationButton;
 
     private CenterMenuButton centerButton;
 
@@ -32,6 +45,13 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
 
     private OnStateUpdateListener stateUpdateListener;
     private OnItemClickListener onItemClickListener;
+    private OnConfirmationListener onConfirmationListener;
+
+    private List<Object> listObjectData;
+    private Map<String, CircleMenuButton> listIndentifyChildMenuButton;
+
+    private Drawable centerMenuButtonDrawable;
+    private Drawable confirmationMenuButtonDrawable;
 
     public CircleMenu(Context context) {
         this(context, null);
@@ -54,6 +74,10 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
             circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_start_angle, getResources().getInteger(R.integer.circle_menu_start_angle));
             radius = typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
             hintsEnabled = typedArray.getBoolean(R.styleable.CircleMenu_hintsEnabled, false);
+            centerMenuButtonDrawable = typedArray.getDrawable(R.styleable.CircleMenu_center_drawable);
+            confirmationMenuButtonDrawable = typedArray.getDrawable(R.styleable.CircleMenu_confirmation_center_drawable);
+            listObjectData = new ArrayList<>();
+            listIndentifyChildMenuButton = new HashMap<>();
         } finally {
             typedArray.recycle();
         }
@@ -88,7 +112,20 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
             }
         });
 
+        addCenterDrawableIfEnable();
         addView(centerButton, super.generateDefaultLayoutParams());
+    }
+
+    private void addCenterDrawableIfEnable() {
+        if (this.centerMenuButtonDrawable != null) {
+            centerButton.setImageDrawable(this.centerMenuButtonDrawable);
+        }
+    }
+
+    private void addConfirmationDrawableIfEnable() {
+        if (this.confirmationMenuButtonDrawable != null) {
+            centerButton.setImageDrawable(this.confirmationMenuButtonDrawable);
+        }
     }
 
     @Override
@@ -181,6 +218,7 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
 
     @Override
     public void onExpanded() {
+        addConfirmationDrawableIfEnable();
         centerButton.setClickable(true);
 
         if (stateUpdateListener != null) {
@@ -216,21 +254,69 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
 
     @Override
     public void onCollapsed() {
+        addCenterDrawableIfEnable();
         centerButton.setClickable(true);
-
-        if (stateUpdateListener != null) {
-            stateUpdateListener.onMenuCollapsed();
+        if (this.confirmationButton) {
+            onConfirmationListener.onConfirmation(listObjectData);
+            clearClircleMenuButtons();
+        } else {
+            if (stateUpdateListener != null) {
+                stateUpdateListener.onMenuCollapsed();
+            }
         }
+    }
+
+    private void clearClircleMenuButtons() {
+        setStatusDefaultCircleMenuButton();
+        listIndentifyChildMenuButton = new HashMap<>();
+        listObjectData = new ArrayList<>();
     }
 
     @Override
     public void onItemClick(CircleMenuButton menuButton) {
         centerButton.setExpanded(false);
-        itemSelectionAnimator.onItemClick(menuButton, menuController.getButtonsPoint(menuButton));
+        if (menuButton.isTypeCheck()) {
+            menuButton.setAlpha(0.2f);
+            if (verifyAlreadyChecked(menuButton.getGenerateId())) {
+                removeCheck(menuButton);
+            } else {
+                addCheck(menuButton);
+            }
+        } else {
+            itemSelectionAnimator.onItemClick(menuButton, menuController.getButtonsPoint(menuButton));
+        }
 
         if (onItemClickListener != null) {
             onItemClickListener.onItemClick(menuButton);
         }
+    }
+
+    private void addCheck(CircleMenuButton menuButton) {
+        menuButton.setGenerateId(UUID.randomUUID().toString());
+        listIndentifyChildMenuButton.put(menuButton.getGenerateId(), menuButton);
+        listObjectData.add(menuButton.getMetaData());
+    }
+
+    private void removeCheck(CircleMenuButton menuButton) {
+        menuButton.setAlpha(1f);
+        listObjectData.remove(menuButton.getMetaData());
+        listIndentifyChildMenuButton.remove(menuButton.getGenerateId());
+    }
+
+    public void setStatusDefaultCircleMenuButton() {
+        for(Map.Entry<String, CircleMenuButton> entry : listIndentifyChildMenuButton.entrySet()) {
+            CircleMenuButton cirleMenuButton = entry.getValue();
+            cirleMenuButton.setAlpha(1f);
+        }
+    }
+
+    public boolean verifyAlreadyChecked(String id) {
+        if (id != null) {
+            if (listIndentifyChildMenuButton.get(id) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -253,6 +339,10 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
         this.stateUpdateListener = listener;
     }
 
+    public void setOnConfirmationListener(OnConfirmationListener onConfirmationListener) {
+        this.onConfirmationListener = onConfirmationListener;
+    }
+
     public void toggle() {
         menuController.toggle();
     }
@@ -264,6 +354,14 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
     public void addButton(CircleMenuButton menuButton) {
         addView(menuButton, getChildCount() - 1);
         menuController.addButton(menuButton);
+    }
+
+    public boolean isConfirmationButton() {
+        return confirmationButton;
+    }
+
+    public void setConfimationButton(boolean buttonConfimation) {
+        this.confirmationButton = buttonConfimation;
     }
 
 }
