@@ -7,6 +7,7 @@
         <attr name="exit_animation_duration" format="integer"/>
         <attr name="distance" format="integer"/>
         <attr name="hintsEnabled" format="boolean"/>
+        <attr name="multiple_check" format="boolean"/>
         <attr name="center_drawable" format="reference"/>
         <attr name="confirmation_center_drawable" format="reference"/>
     </declare-styleable>

@@ -29,7 +29,6 @@ public class CircleMenuButton extends AppCompatImageButton {
     private Drawable iconDrawable;
     private String hintText;
     private int buttonSize;
-    private boolean typeCheck;
     private Object metaData;
 
     public CircleMenuButton(Context context) {
@@ -53,7 +52,6 @@ public class CircleMenuButton extends AppCompatImageButton {
         colorDisabled = attr.getColor(R.styleable.CircleMenuButton_colorDisabled, getColor(R.color.circle_menu_button_color_disabled));
         iconId = attr.getResourceId(R.styleable.CircleMenuButton_icon, 0);
         hintText = attr.getString(R.styleable.CircleMenuButton_hintText);
-        typeCheck = false;
         attr.recycle();
 
         buttonSize = (int) getDimension(R.dimen.circle_menu_button_size);
@@ -195,14 +193,6 @@ public class CircleMenuButton extends AppCompatImageButton {
      */
     public String getHintText() {
         return hintText;
-    }
-
-    public boolean isTypeCheck() {
-        return typeCheck;
-    }
-
-    public void setTypeCheck(boolean typeCheck) {
-        this.typeCheck = typeCheck;
     }
 
     public Object getMetaData() {

@@ -36,7 +36,15 @@ public class CircleMenu extends ViewGroup implements
     private float radius = -1;
     private int circleStartAngle;
     private boolean hintsEnabled;
-    private boolean confirmationButton;
+    private boolean multipleCheck;
+
+    public CenterMenuButton getCenterButton() {
+        return centerButton;
+    }
+
+    public void setCenterButton(CenterMenuButton centerButton) {
+        this.centerButton = centerButton;
+    }
 
     private CenterMenuButton centerButton;
 
@@ -75,6 +83,7 @@ public class CircleMenu extends ViewGroup implements
             radius = typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
             hintsEnabled = typedArray.getBoolean(R.styleable.CircleMenu_hintsEnabled, false);
             centerMenuButtonDrawable = typedArray.getDrawable(R.styleable.CircleMenu_center_drawable);
+            multipleCheck = typedArray.getBoolean(R.styleable.CircleMenu_multiple_check, false);
             confirmationMenuButtonDrawable = typedArray.getDrawable(R.styleable.CircleMenu_confirmation_center_drawable);
             listObjectData = new ArrayList<>();
             listIndentifyChildMenuButton = new HashMap<>();
@@ -108,12 +117,17 @@ public class CircleMenu extends ViewGroup implements
         centerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                menuController.toggle();
+                clickCenterMenu();
             }
         });
 
         addCenterDrawableIfEnable();
         addView(centerButton, super.generateDefaultLayoutParams());
+    }
+
+    private void clickCenterMenu() {
+        centerButton.setMultipleCheck(multipleCheck);
+        menuController.toggle();
     }
 
     private void addCenterDrawableIfEnable() {
@@ -256,13 +270,12 @@ public class CircleMenu extends ViewGroup implements
     public void onCollapsed() {
         addCenterDrawableIfEnable();
         centerButton.setClickable(true);
-        if (this.confirmationButton) {
+        if (this.multipleCheck) {
             onConfirmationListener.onConfirmation(listObjectData);
             clearClircleMenuButtons();
-        } else {
-            if (stateUpdateListener != null) {
-                stateUpdateListener.onMenuCollapsed();
-            }
+        }
+        if (stateUpdateListener != null) {
+            stateUpdateListener.onMenuCollapsed();
         }
     }
 
@@ -275,7 +288,7 @@ public class CircleMenu extends ViewGroup implements
     @Override
     public void onItemClick(CircleMenuButton menuButton) {
         centerButton.setExpanded(false);
-        if (menuButton.isTypeCheck()) {
+        if (multipleCheck) {
             menuButton.setAlpha(0.2f);
             if (verifyAlreadyChecked(menuButton.getGenerateId())) {
                 removeCheck(menuButton);
@@ -327,6 +340,11 @@ public class CircleMenu extends ViewGroup implements
     }
 
     @Override
+    protected int[] onCreateDrawableState(int extraSpace) {
+        return super.onCreateDrawableState(extraSpace);
+    }
+
+    @Override
     public void redrawView() {
         invalidate();
     }
@@ -356,12 +374,12 @@ public class CircleMenu extends ViewGroup implements
         menuController.addButton(menuButton);
     }
 
-    public boolean isConfirmationButton() {
-        return confirmationButton;
+    public boolean isMultipleCheck() {
+        return multipleCheck;
     }
 
-    public void setConfimationButton(boolean buttonConfimation) {
-        this.confirmationButton = buttonConfimation;
+    public void setMultipleCheck(boolean buttonConfimation) {
+        this.multipleCheck = buttonConfimation;
     }
 
 }
