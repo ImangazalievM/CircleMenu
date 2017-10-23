@@ -21,10 +21,12 @@ public class MainActivity extends AppCompatActivity {
         final ViewGroup snackbarContainer = (ViewGroup) findViewById(R.id.snackbar_contaner);
 
         final CircleMenu circleMenuDefault = (CircleMenu) findViewById(R.id.circle_menu_default);
-        final CircleMenu circleMenuMultiple = (CircleMenu) findViewById(R.id.circle_menu_multiple);
+        //final CircleMenu circleMenuMultiple = (CircleMenu) findViewById(R.id.circle_menu_multiple);
+        final CircleMenu circleMenuMultipleBorder = (CircleMenu) findViewById(R.id.circle_menu_multiple_border);
 
         prepareViewCircleMenuDefault(circleMenuDefault, snackbarContainer);
-        prepareViewCircleMenuMultiple(circleMenuMultiple);
+        //prepareViewCircleMenuMultiple(circleMenuMultiple);
+        prepareViewCircleMenuMultipleBorder(circleMenuMultipleBorder);
     }
 
     private void prepareViewCircleMenuDefault(CircleMenu circleMenu, final ViewGroup snackbarContainer) {
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             circleMenuButton.setColorNormal(R.color.color_normal);
             circleMenuButton.setColorPressed(R.color.color_pressed);
             circleMenuButton.setIconResId(R.drawable.ic_favorite);
+            circleMenuButton.setFullDrawable(false);
             circleMenuButton.setMetaData(new ExampleData(i));
 
             circleMenuMultiple.addButton(circleMenuButton);
@@ -67,6 +70,37 @@ public class MainActivity extends AppCompatActivity {
          * get meta data of circles selected
          */
         circleMenuMultiple.setOnConfirmationListener(new CircleMenu.OnConfirmationListener() {
+            @Override
+            public void onConfirmation(List<Object> listData) {
+                for (int i =0; i< listData.size(); i++ ) {
+                    ExampleData exampleData = (ExampleData) listData.get(i);
+                    Log.d("MainActivity", "Id: " + exampleData.getId());
+                }
+            }
+        });
+    }
+
+
+    private void prepareViewCircleMenuMultipleBorder(CircleMenu circleMenu) {
+        /**
+         * adding dynamically
+         */
+        for (int i = 0; i < 4; i ++) {
+            CircleMenuButton circleMenuButton =  new CircleMenuButton(this);
+
+            circleMenuButton.setColorNormal(R.color.color_normal);
+            circleMenuButton.setColorPressed(R.color.color_pressed);
+            circleMenuButton.setIconResId(R.drawable.ic_favorite);
+            circleMenuButton.setEnableBorder(true);
+            circleMenuButton.setMetaData(new ExampleData(i));
+
+            circleMenu.addButton(circleMenuButton);
+        }
+
+        /**
+         * get meta data of circles selected
+         */
+        circleMenu.setOnConfirmationListener(new CircleMenu.OnConfirmationListener() {
             @Override
             public void onConfirmation(List<Object> listData) {
                 for (int i =0; i< listData.size(); i++ ) {

@@ -1,9 +1,14 @@
 package com.imangazaliev.circlemenu;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -18,8 +23,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 
 public class CircleMenuButton extends AppCompatImageButton {
+
+    private static final Interpolator SWEEP_INTERPOLATOR = new DecelerateInterpolator();
+    private static final int SWEEP_ANIMATOR_DURATION = 500;
 
     private String generateId;
     private int colorNormal;
@@ -30,6 +40,25 @@ public class CircleMenuButton extends AppCompatImageButton {
     private String hintText;
     private int buttonSize;
     private Object metaData;
+
+    private boolean hasCenterButton;
+    private ValueAnimator mValueAnimatorSweep;
+    private float mCurrentSweepAngle = 360f;
+    private RectF mRectF;
+    private Paint mPaint;
+
+    private boolean enableBorder;
+    private boolean fullDrawable;
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmapToRounded(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    private Bitmap bitmap;
 
     public CircleMenuButton(Context context) {
         this(context, null);
@@ -51,10 +80,19 @@ public class CircleMenuButton extends AppCompatImageButton {
         colorPressed = attr.getColor(R.styleable.CircleMenuButton_colorPressed, getColor(R.color.circle_menu_button_color_pressed));
         colorDisabled = attr.getColor(R.styleable.CircleMenuButton_colorDisabled, getColor(R.color.circle_menu_button_color_disabled));
         iconId = attr.getResourceId(R.styleable.CircleMenuButton_icon, 0);
+        enableBorder = attr.getBoolean(R.styleable.CircleMenuButton_enable_border, false);
+        fullDrawable = attr.getBoolean(R.styleable.CircleMenuButton_full_drawable, false);
+
         hintText = attr.getString(R.styleable.CircleMenuButton_hintText);
         attr.recycle();
 
         buttonSize = (int) getDimension(R.dimen.circle_menu_button_size);
+
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeWidth(4);
+        mPaint.setColor(Color.GRAY);
 
         updateBackground();
     }
@@ -184,6 +222,84 @@ public class CircleMenuButton extends AppCompatImageButton {
         this.hintText = getResources().getString(hintTextResId);
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (this.getDrawable() != null && hasCenterButton == false) {
+            Bitmap source = BitmapHelper.drawableToBitmap(this.getDrawable());
+            Bitmap resizeBitmap = BitmapHelper.resizeBitmap(source, getWidth(), getHeight());
+
+            if (fullDrawable) {
+                BitmapHelper.transformCircularBitmap(canvas, resizeBitmap);
+            } else {
+                float radius = resizeBitmap.getWidth() / 2f;
+                radius = radius - source.getWidth() / 2f;
+                canvas.drawBitmap(source, radius , radius, mPaint);
+            }
+            this.mRectF = BitmapHelper.createRectFFromBitmap(resizeBitmap, 1);
+
+            if (enableBorder) {
+                addCircularBorder(canvas);
+                addSecondCircularBorder(canvas);
+            }
+        } else {
+            super.onDraw(canvas);
+        }
+    }
+
+    private void addCircularBorder(Canvas canvas) {
+        this.mPaint.setColor(Color.WHITE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawArc(this.mRectF, 0f, 360f, false, this.mPaint);
+        } else {
+            Path path = new Path();
+            path.addArc(this.mRectF, 0f, 360f);
+            canvas.drawPath(path, this.mPaint);
+        }
+    }
+
+    private void addSecondCircularBorder(Canvas canvas) {
+        this.mPaint.setColor(Color.GRAY);
+        canvas.drawArc(mRectF, 0, mCurrentSweepAngle, false, mPaint);
+    }
+
+    public void startCheckAnimation() {
+        mValueAnimatorSweep = ValueAnimator.ofFloat(360, 0);
+        mValueAnimatorSweep.setInterpolator(SWEEP_INTERPOLATOR);
+        mValueAnimatorSweep.setDuration(SWEEP_ANIMATOR_DURATION);
+
+        mValueAnimatorSweep.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                setCurrentSweepAngle((float)animation.getAnimatedValue());
+                invalidate();
+            }
+        });
+
+        mValueAnimatorSweep.start();
+    }
+
+    public void reverseCheckAnimation() {
+        mPaint.setColor(Color.GRAY);
+        mValueAnimatorSweep = ValueAnimator.ofFloat(0, 360);
+        mValueAnimatorSweep.setInterpolator(SWEEP_INTERPOLATOR);
+        mValueAnimatorSweep.setDuration(SWEEP_ANIMATOR_DURATION);
+
+        mValueAnimatorSweep.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                setCurrentSweepAngle((float)animation.getAnimatedValue());
+                invalidate();
+            }
+        });
+
+        mValueAnimatorSweep.start();
+    }
+
+    public void setCurrentSweepAngle(float currentSweepAngle) {
+        mCurrentSweepAngle = currentSweepAngle;
+    }
+
     public void setHintText(String hintText) {
         this.hintText = hintText;
     }
@@ -211,4 +327,19 @@ public class CircleMenuButton extends AppCompatImageButton {
         return generateId;
     }
 
+    public boolean isHasCenterButton() {
+        return hasCenterButton;
+    }
+
+    public void setHasCenterButton(boolean hasCenterButton) {
+        this.hasCenterButton = hasCenterButton;
+    }
+
+    public void setEnableBorder(boolean enableBorder) {
+        this.enableBorder = enableBorder;
+    }
+
+    public void setFullDrawable(boolean fullDrawable) {
+        this.fullDrawable = fullDrawable;
+    }
 }
