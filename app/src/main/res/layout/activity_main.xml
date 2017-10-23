@@ -58,13 +58,27 @@
 
     </com.imangazaliev.circlemenu.CircleMenu>
 
+    <!--<com.imangazaliev.circlemenu.CircleMenu-->
+        <!--android:id="@+id/circle_menu_multiple"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--app:hintsEnabled="true"-->
+        <!--app:multiple_check="true"-->
+        <!--app:center_drawable="@drawable/ic_add_alert_black_24dp"-->
+        <!--app:confirmation_center_drawable="@drawable/ic_send_red">-->
+    <!--</com.imangazaliev.circlemenu.CircleMenu>-->
+
+
     <com.imangazaliev.circlemenu.CircleMenu
-        android:id="@+id/circle_menu_multiple"
+        android:id="@+id/circle_menu_multiple_border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         app:hintsEnabled="true"
         app:multiple_check="true"
+        app:border_check="true"
+        app:alpha_check="false"
         app:center_drawable="@drawable/ic_add_alert_black_24dp"
         app:confirmation_center_drawable="@drawable/ic_send_red">
     </com.imangazaliev.circlemenu.CircleMenu>

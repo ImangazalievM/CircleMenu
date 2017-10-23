@@ -37,6 +37,8 @@ public class CircleMenu extends ViewGroup implements
     private int circleStartAngle;
     private boolean hintsEnabled;
     private boolean multipleCheck;
+    private boolean borderCheck;
+    private boolean alphaCheck;
 
     public CenterMenuButton getCenterButton() {
         return centerButton;
@@ -61,6 +63,9 @@ public class CircleMenu extends ViewGroup implements
     private Drawable centerMenuButtonDrawable;
     private Drawable confirmationMenuButtonDrawable;
 
+    private float alphaChecked = 0.5f;
+    private float alphaUnChecked = 1f;
+
     public CircleMenu(Context context) {
         this(context, null);
     }
@@ -84,6 +89,8 @@ public class CircleMenu extends ViewGroup implements
             hintsEnabled = typedArray.getBoolean(R.styleable.CircleMenu_hintsEnabled, false);
             centerMenuButtonDrawable = typedArray.getDrawable(R.styleable.CircleMenu_center_drawable);
             multipleCheck = typedArray.getBoolean(R.styleable.CircleMenu_multiple_check, false);
+            borderCheck = typedArray.getBoolean(R.styleable.CircleMenu_border_check, false);
+            alphaCheck = typedArray.getBoolean(R.styleable.CircleMenu_alpha_check, true);
             confirmationMenuButtonDrawable = typedArray.getDrawable(R.styleable.CircleMenu_confirmation_center_drawable);
             listObjectData = new ArrayList<>();
             listIndentifyChildMenuButton = new HashMap<>();
@@ -114,6 +121,7 @@ public class CircleMenu extends ViewGroup implements
 
     private void createCenterButton(Context context) {
         centerButton = new CenterMenuButton(context);
+        centerButton.setHasCenterButton(true);
         centerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,7 +279,9 @@ public class CircleMenu extends ViewGroup implements
         addCenterDrawableIfEnable();
         centerButton.setClickable(true);
         if (this.multipleCheck) {
-            onConfirmationListener.onConfirmation(listObjectData);
+            if (onConfirmationListener != null) {
+                onConfirmationListener.onConfirmation(listObjectData);
+            }
             clearClircleMenuButtons();
         }
         if (stateUpdateListener != null) {
@@ -289,7 +299,6 @@ public class CircleMenu extends ViewGroup implements
     public void onItemClick(CircleMenuButton menuButton) {
         centerButton.setExpanded(false);
         if (multipleCheck) {
-            menuButton.setAlpha(0.2f);
             if (verifyAlreadyChecked(menuButton.getGenerateId())) {
                 removeCheck(menuButton);
             } else {
@@ -306,14 +315,33 @@ public class CircleMenu extends ViewGroup implements
 
     private void addCheck(CircleMenuButton menuButton) {
         menuButton.setGenerateId(UUID.randomUUID().toString());
+        addCheckedAnimation(menuButton);
         listIndentifyChildMenuButton.put(menuButton.getGenerateId(), menuButton);
         listObjectData.add(menuButton.getMetaData());
     }
 
+    private void addCheckedAnimation(CircleMenuButton menuButton) {
+        if (alphaCheck){
+            menuButton.setAlpha(alphaChecked);
+        }
+        if (borderCheck){
+            menuButton.startCheckAnimation();
+        }
+    }
+
     private void removeCheck(CircleMenuButton menuButton) {
-        menuButton.setAlpha(1f);
+        unCheckedAnimation(menuButton);
         listObjectData.remove(menuButton.getMetaData());
         listIndentifyChildMenuButton.remove(menuButton.getGenerateId());
+    }
+
+    private void unCheckedAnimation(CircleMenuButton menuButton) {
+        if (alphaCheck){
+            menuButton.setAlpha(alphaUnChecked);
+        }
+        if (borderCheck){
+            menuButton.reverseCheckAnimation();
+        }
     }
 
     public void setStatusDefaultCircleMenuButton() {
@@ -380,6 +408,18 @@ public class CircleMenu extends ViewGroup implements
 
     public void setMultipleCheck(boolean buttonConfimation) {
         this.multipleCheck = buttonConfimation;
+    }
+
+    public void setAlphaChecked(float alphaChecked) {
+        this.alphaChecked = alphaChecked;
+    }
+
+    public void setBorderChecked(boolean borderCheck) {
+        this.borderCheck = borderCheck;
+    }
+
+    public void setAlphaUnChecked(float alphaUnChecked) {
+        this.alphaUnChecked = alphaUnChecked;
     }
 
 }
