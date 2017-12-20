@@ -5,8 +5,11 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -114,7 +117,8 @@ public class CircleMenu extends ViewGroup implements
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             if (child != centerButton) {
-                menuController.addButton((CircleMenuButton) child);
+                Log.d("CircleMenu", "AQUI MISERA!: ");
+                menuController.addButton((CircleMenuText) child);
             }
         }
     }
@@ -131,6 +135,7 @@ public class CircleMenu extends ViewGroup implements
 
         addCenterDrawableIfEnable();
         addView(centerButton, super.generateDefaultLayoutParams());
+
     }
 
     private void clickCenterMenu() {
@@ -397,9 +402,20 @@ public class CircleMenu extends ViewGroup implements
         return menuController.isExpanded();
     }
 
-    public void addButton(CircleMenuButton menuButton) {
+    public void addButton(CircleMenuText menuButton) {
+        Log.d("CircleMenu", "addButton: ");
         addView(menuButton, getChildCount() - 1);
         menuController.addButton(menuButton);
+    }
+
+    public void addCircleMenuText(CircleMenuText circleMenuText) {
+        addView(circleMenuText, getChildCount() -1);
+        menuController.addCircleMenuText(circleMenuText);
+    }
+
+    public void addText(TextView txt, RelativeLayout.LayoutParams params) {
+        addView(txt, getChildCount() - 1, params);
+        //menuController.addButton(menuButton);
     }
 
     public boolean isMultipleCheck() {
@@ -409,6 +425,7 @@ public class CircleMenu extends ViewGroup implements
     public void setMultipleCheck(boolean buttonConfimation) {
         this.multipleCheck = buttonConfimation;
     }
+
 
     public void setAlphaChecked(float alphaChecked) {
         this.alphaChecked = alphaChecked;

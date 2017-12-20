@@ -2,6 +2,7 @@ package com.imangazaliev.circlemenu;
 
 import android.animation.ValueAnimator;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
@@ -38,8 +39,10 @@ class MenuController {
 
     }
 
-    private List<CircleMenuButton> buttons = new ArrayList<>();
-    private HashMap<CircleMenuButton, MenuButtonPoint> buttonsPositions = new HashMap<>();
+    private List<CircleMenuText> buttons = new ArrayList<>();
+    private List<CircleMenuText> menuTexts = new ArrayList<>();
+
+    private HashMap<CircleMenuText, MenuButtonPoint> buttonsPositions = new HashMap<>();
     private final ControllerListener listener;
 
     private View.OnClickListener onButtonItemClickListener;
@@ -54,13 +57,13 @@ class MenuController {
         this.onButtonItemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClick((CircleMenuButton) v);
+                onItemClick((CircleMenuText) v);
             }
         };
         this.onButtonItemLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onItemLongClick((CircleMenuButton) v);
+                onItemLongClick((CircleMenuText) v);
                 return hintsEnabled;
             }
         };
@@ -75,7 +78,7 @@ class MenuController {
         float lastAngle = startAngle;
 
         for (int i = 0; i < childCount; i++) {
-            final CircleMenuButton button = buttons.get(i);
+            final CircleMenuText button = buttons.get(i);
 
             if (button.getVisibility() == View.GONE) {
                 continue;
@@ -117,7 +120,7 @@ class MenuController {
         setButtonsStartPosition(false);
         setState(MenuState.COLLAPSE_ANIMATION_STARTED);
 
-        for (final CircleMenuButton button : buttons) {
+        for (final CircleMenuText button : buttons) {
             MenuButtonPoint buttonPosition = buttonsPositions.get(button);
 
             //x axis animation
@@ -161,7 +164,7 @@ class MenuController {
         setButtonsStartPosition(true);
         setState(MenuState.EXPAND_ANIMATION_STARTED);
 
-        for (final CircleMenuButton button : buttons) {
+        for (final CircleMenuText button : buttons) {
             MenuButtonPoint buttonPosition = buttonsPositions.get(button);
 
             //x axis animation
@@ -202,7 +205,7 @@ class MenuController {
     }
 
     private void setButtonsStartPosition(boolean collapsed) {
-        for (final CircleMenuButton button : buttons) {
+        for (final CircleMenuText button : buttons) {
             MenuButtonPoint buttonPosition = buttonsPositions.get(button);
             button.setX(collapsed ? buttonPosition.collapsedX : buttonPosition.expandedX);
             button.setY(collapsed ? buttonPosition.collapsedY : buttonPosition.expandedY);
@@ -210,6 +213,8 @@ class MenuController {
     }
 
     void setState(@MenuState int state) {
+
+        Log.d("MenuController", "setState: " + state);
         this.state = state;
         switch (state) {
             case MenuState.EXPAND_ANIMATION_STARTED:
@@ -250,20 +255,24 @@ class MenuController {
         return state == MenuState.EXPANDED;
     }
 
-    void addButton(final CircleMenuButton menuButton) {
+    void addButton(final CircleMenuText menuButton) {
         buttons.add(menuButton);
         menuButton.setOnClickListener(onButtonItemClickListener);
         menuButton.setOnLongClickListener(onButtonItemLongClickListener);
     }
 
-    private void onItemClick(CircleMenuButton menuButton) {
+    void addCircleMenuText(final CircleMenuText circleMenuText) {
+        menuTexts.add(circleMenuText);
+    }
+
+    private void onItemClick(CircleMenuText menuButton) {
         if (listener != null) {
-            listener.onItemClick(menuButton);
+            listener.onItemClick(menuButton.getCircleMenuButton());
         }
     }
 
-    private void onItemLongClick(CircleMenuButton menuButton) {
-            listener.onItemLongClick(menuButton);
+    private void onItemLongClick(CircleMenuText menuButton) {
+            listener.onItemLongClick(menuButton.getCircleMenuButton());
     }
 
     private int getButtonsCount() {
@@ -296,6 +305,10 @@ class MenuController {
 
     MenuButtonPoint getButtonsPoint(CircleMenuButton menuButton) {
         return buttonsPositions.get(menuButton);
+    }
+
+    public List<CircleMenuText> getMenuTexts() {
+        return menuTexts;
     }
 
 }

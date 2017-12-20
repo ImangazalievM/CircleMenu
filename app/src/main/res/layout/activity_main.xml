@@ -5,58 +5,59 @@
     android:layout_height="match_parent"
     android:background="#fff">
 
-    <com.imangazaliev.circlemenu.CircleMenu
-        android:id="@+id/circle_menu_default"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:hintsEnabled="true">
+    <!--<com.imangazaliev.circlemenu.CircleMenu-->
+        <!--android:visibility="gone"-->
+        <!--android:id="@+id/circle_menu_default"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:hintsEnabled="true">-->
 
-        <com.imangazaliev.circlemenu.CircleMenuButton
-            android:id="@+id/favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:colorNormal="#2196F3"
-            app:colorPressed="#1E88E5"
-            app:hintText="Favorite"
-            app:icon="@drawable/ic_favorite" />
+        <!--<com.imangazaliev.circlemenu.CircleMenuButton-->
+            <!--android:id="@+id/favorite"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:colorNormal="#2196F3"-->
+            <!--app:colorPressed="#1E88E5"-->
+            <!--app:hintText="Favorite"-->
+            <!--app:icon="@drawable/ic_favorite" />-->
 
-        <com.imangazaliev.circlemenu.CircleMenuButton
-            android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:colorNormal="#4CAF50"
-            app:colorPressed="#43A047"
-            app:hintText="Search"
-            app:icon="@drawable/ic_search" />
+        <!--<com.imangazaliev.circlemenu.CircleMenuButton-->
+            <!--android:id="@+id/search"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:colorNormal="#4CAF50"-->
+            <!--app:colorPressed="#43A047"-->
+            <!--app:hintText="Search"-->
+            <!--app:icon="@drawable/ic_search" />-->
 
-        <com.imangazaliev.circlemenu.CircleMenuButton
-            android:id="@+id/alert"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:colorNormal="#F44336"
-            app:colorPressed="#E53935"
-            app:hintText="Alert"
-            app:icon="@drawable/ic_alert" />
+        <!--<com.imangazaliev.circlemenu.CircleMenuButton-->
+            <!--android:id="@+id/alert"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:colorNormal="#F44336"-->
+            <!--app:colorPressed="#E53935"-->
+            <!--app:hintText="Alert"-->
+            <!--app:icon="@drawable/ic_alert" />-->
 
-        <com.imangazaliev.circlemenu.CircleMenuButton
-            android:id="@+id/place"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:colorNormal="#9C27B0"
-            app:colorPressed="#8E24AA"
-            app:hintText="Place"
-            app:icon="@drawable/ic_place" />
+        <!--<com.imangazaliev.circlemenu.CircleMenuButton-->
+            <!--android:id="@+id/place"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:colorNormal="#9C27B0"-->
+            <!--app:colorPressed="#8E24AA"-->
+            <!--app:hintText="Place"-->
+            <!--app:icon="@drawable/ic_place" />-->
 
-        <com.imangazaliev.circlemenu.CircleMenuButton
-            android:id="@+id/edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:colorNormal="#FF9800"
-            app:colorPressed="#FB8C00"
-            app:hintText="Edit"
-            app:icon="@drawable/ic_edit" />
+        <!--<com.imangazaliev.circlemenu.CircleMenuButton-->
+            <!--android:id="@+id/edit"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:colorNormal="#FF9800"-->
+            <!--app:colorPressed="#FB8C00"-->
+            <!--app:hintText="Edit"-->
+            <!--app:icon="@drawable/ic_edit" />-->
 
-    </com.imangazaliev.circlemenu.CircleMenu>
+    <!--</com.imangazaliev.circlemenu.CircleMenu>-->
 
     <!--<com.imangazaliev.circlemenu.CircleMenu-->
         <!--android:id="@+id/circle_menu_multiple"-->
@@ -68,7 +69,6 @@
         <!--app:center_drawable="@drawable/ic_add_alert_black_24dp"-->
         <!--app:confirmation_center_drawable="@drawable/ic_send_red">-->
     <!--</com.imangazaliev.circlemenu.CircleMenu>-->
-
 
     <com.imangazaliev.circlemenu.CircleMenu
         android:id="@+id/circle_menu_multiple_border"
@@ -82,5 +82,11 @@
         app:center_drawable="@drawable/ic_add_alert_black_24dp"
         app:confirmation_center_drawable="@drawable/ic_send_red">
     </com.imangazaliev.circlemenu.CircleMenu>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button" />
 
 </RelativeLayout>
