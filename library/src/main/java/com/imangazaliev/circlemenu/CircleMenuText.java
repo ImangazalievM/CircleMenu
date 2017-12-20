@@ -2,6 +2,7 @@ package com.imangazaliev.circlemenu;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -66,6 +67,8 @@ public class CircleMenuText extends LinearLayout {
         textTitle = new TextView(context);
         textTitle.setText("");
         textTitle.setClickable(false);
+        textTitle.setTextColor(Color.WHITE);
+        textTitle.setTextSize(13);
 
         RelativeLayout.LayoutParams textParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
