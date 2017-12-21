@@ -14,6 +14,8 @@ compile 'com.github.imangazalievm:circlemenu:1.1.1'
 
 # Usage
 
+### XML
+
 ```xml
     <com.imangazaliev.circlemenu.CircleMenu
         android:id="@+id/circle_menu_multiple_border"
@@ -28,6 +30,7 @@ compile 'com.github.imangazalievm:circlemenu:1.1.1'
         app:confirmation_center_drawable="@drawable/ic_send_red">
     </com.imangazaliev.circlemenu.CircleMenu>
 ```
+### Java
 
 ```java
         final CircleMenu circleMenuMultiple = (CircleMenu) findViewById(R.id.circle_menu_multiple_border);
