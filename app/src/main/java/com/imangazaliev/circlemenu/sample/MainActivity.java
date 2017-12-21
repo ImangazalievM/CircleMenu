@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
             CircleMenuText circleMenuText = new CircleMenuText(this);
             circleMenuText.setMetaData(new ExampleData(i));
+
             circleMenuText.setIconResId(R.drawable.ic_favorite);
             circleMenuText.setFullDrawable(false);
             circleMenuText.setEnableBorder(true);
