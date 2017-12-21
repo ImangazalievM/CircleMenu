@@ -74,7 +74,7 @@ Set OnStateUpdateListener for handling open/close actions
 circleMenu.setStateUpdateListener(new CircleMenu.OnStateUpdateListener() {
     @Override
     public void onMenuExpanded() {
-        
+
     }
 
     @Override
@@ -100,11 +100,64 @@ Also you can enable hints, that shows in Toast by long pressing a button
 </com.imangazaliev.circlemenu.CircleMenu>
 ```
 
+### If you want to use multiple checks
+
+
+<p align="center">
+  <img src="etc/circle-menu-checked.gif" height="500" alt="progress image view" />
+</p>
+
+```xml
+<com.imangazaliev.circlemenu.CircleMenu
+        ...
+        app:multiple_check="true"
+        app:center_drawable="@drawable/ic_add_alert_black_24dp"
+        app:confirmation_center_drawable="@drawable/ic_send_red">
+
+        <!-- Add your menu button items here -->
+
+</com.imangazaliev.circlemenu.CircleMenu>
+```
+
+### Animated border to multiple checks
+
+<p align="center">
+  <img src="etc/check-border.gif" height="500" alt="progress image view" />
+</p>
+
+```xml
+<com.imangazaliev.circlemenu.CircleMenu
+        ...
+        app:multiple_check="true"
+        app:border_check="true"
+        app:alpha_check="false"
+        app:center_drawable="@drawable/ic_add_alert_black_24dp"
+        app:confirmation_center_drawable="@drawable/ic_send_red">
+
+        <!-- Add your menu button items here -->
+
+</com.imangazaliev.circlemenu.CircleMenu>
+```
+
+### Multiple checks attributes on Circle Menu
+
+* `app:multiple_check` : Enables the multiple_check selection (Default: `false`)
+* `app:border_check="true"`: Enable animation border
+* `app:alpha_check="false"`: Enable animation alpha
+* `app:center_drawable` : Path to your custom graphic resource
+* `app:confirmation_center_drawable` : Path to your custom confirmation button graphic resource
+
+### Attributes on Circle Menu Button
+
+* `app:enable_border` : Enable animation border
+* `app:full_drawable` : When you want to draw in full circle
+
+
 ## License
 
 The MIT License
 
-Copyright (c) 2016 Mahach Imangazaliev 
+Copyright (c) 2016 Mahach Imangazaliev
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

@@ -17,10 +17,10 @@ public class CenterMenuButton extends CircleMenuButton {
 
     private boolean expanded;
     private AnimatorSet preLollipopAnimationSet;
+    private boolean multipleCheck;
 
     public CenterMenuButton(Context context) {
         super(context);
-
         this.expanded = false;
     }
 
@@ -42,10 +42,13 @@ public class CenterMenuButton extends CircleMenuButton {
 
     public void setExpanded(boolean isExpanded) {
         expanded = isExpanded;
-        if (isVectorAnimationSupported()) {
-            startVectorAnimation(isExpanded);
-        } else {
-            startPreLollipopAnimation();
+
+        if (this.multipleCheck == false) {
+            if (isVectorAnimationSupported()) {
+                startVectorAnimation(isExpanded);
+            } else {
+                startPreLollipopAnimation();
+            }
         }
     }
 
@@ -97,4 +100,11 @@ public class CenterMenuButton extends CircleMenuButton {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
+    public boolean isMultipleCheck() {
+        return multipleCheck;
+    }
+
+    public void setMultipleCheck(boolean multipleCheck) {
+        this.multipleCheck = multipleCheck;
+    }
 }

@@ -7,6 +7,11 @@
         <attr name="exit_animation_duration" format="integer"/>
         <attr name="distance" format="integer"/>
         <attr name="hintsEnabled" format="boolean"/>
+        <attr name="multiple_check" format="boolean"/>
+        <attr name="border_check" format="boolean"/>
+        <attr name="alpha_check" format="boolean"/>
+        <attr name="center_drawable" format="reference"/>
+        <attr name="confirmation_center_drawable" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="CircleMenuButton">
@@ -14,6 +19,8 @@
         <attr name="colorDisabled" format="color"/>
         <attr name="colorNormal" format="color"/>
         <attr name="icon" format="reference"/>
+        <attr name="enable_border" format="boolean"/>
+        <attr name="full_drawable" format="boolean"/>
         <attr name="hintText" format="string"/>
     </declare-styleable>
 

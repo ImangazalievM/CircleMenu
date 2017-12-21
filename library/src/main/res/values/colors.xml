@@ -9,4 +9,11 @@
     <color name="circle_menu_center_button_color_pressed">#eeeeee</color>
     <color name="circle_menu_center_button_color_opened">#88ffffff</color>
 
+
+    <color name="color_normal">#2196F3</color>
+    <color name="color_pressed">#1E88E5</color>
+
+
+
+
 </resources>
