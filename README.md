@@ -4,6 +4,13 @@
 
 A customization of the lib https://github.com/ImangazalievM/CircleMenu
 
+# Demo
+
+<p align="center">
+  <img src="art/fork_1_check.gif" height="500" alt="" />
+  <img src="art/fork_2_border.gif" height="500" alt="" />
+</p>
+
 # Setup
 
 Add this to your app build.gradle:
@@ -17,56 +24,56 @@ compile 'com.github.imangazalievm:circlemenu:1.1.1'
 ### XML
 
 ```xml
-    <com.imangazaliev.circlemenu.CircleMenu
-        android:id="@+id/circle_menu_multiple_border"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:hintsEnabled="true"
-        app:multiple_check="true"
-        app:alpha_check="false"
-        app:border_check="true"
-        app:center_drawable="@drawable/ic_add_alert_black_24dp"
-        app:confirmation_center_drawable="@drawable/ic_send_red">
-    </com.imangazaliev.circlemenu.CircleMenu>
+<com.imangazaliev.circlemenu.CircleMenu
+    android:id="@+id/circle_menu_multiple_border"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    app:hintsEnabled="true"
+    app:multiple_check="true"
+    app:alpha_check="false"
+    app:border_check="true"
+    app:center_drawable="@drawable/ic_add_alert_black_24dp"
+    app:confirmation_center_drawable="@drawable/ic_send_red">
+</com.imangazaliev.circlemenu.CircleMenu>
 ```
 ### Java
 
 ```java
-        final CircleMenu circleMenuMultiple = (CircleMenu) findViewById(R.id.circle_menu_multiple_border);
-        
-        /**
-         * adding dynamically
-         */
-        for (int i = 0; i < 4; i ++) {
+final CircleMenu circleMenuMultiple = (CircleMenu) findViewById(R.id.circle_menu_multiple_border);
 
-            CircleMenuText circleMenuText = new CircleMenuText(this);
-            circleMenuText.setMetaData(new ExampleData(i));
+/**
+ * adding dynamically
+ */
+for (int i = 0; i < 4; i ++) {
 
-            circleMenuText.setIconResId(R.drawable.ic_favorite);
-            circleMenuText.setFullDrawable(false);
-            circleMenuText.setEnableBorder(true);
-            circleMenuText.setClickable(false);
-            circleMenuText.setColorBorder(Color.RED);
+    CircleMenuText circleMenuText = new CircleMenuText(this);
+    circleMenuText.setMetaData(new ExampleData(i));
 
-            circleMenuText.setTitle("NetoDevel");
-            circleMenuText.setTitleColor(Color.BLACK);
-            circleMenuMultiple.addButton(circleMenuText);
+    circleMenuText.setIconResId(R.drawable.ic_favorite);
+    circleMenuText.setFullDrawable(false);
+    circleMenuText.setEnableBorder(true);
+    circleMenuText.setClickable(false);
+    circleMenuText.setColorBorder(Color.RED);
+
+    circleMenuText.setTitle("NetoDevel");
+    circleMenuText.setTitleColor(Color.BLACK);
+    circleMenuMultiple.addButton(circleMenuText);
+}
+
+/**
+ * get meta data of circles selected
+ */
+circleMenuMultiple.setOnConfirmationListener(new CircleMenu.OnConfirmationListener() {
+    @Override
+    public void onConfirmation(List<Object> listData) {
+        Toast.makeText(getBaseContext(), "Size checked:" + listData.size(), Toast.LENGTH_SHORT).show();
+        for (int i =0; i< listData.size(); i++ ) {
+            ExampleData exampleData = (ExampleData) listData.get(i);
+            Log.d("MainActivity", "Id: " + exampleData.getId());
         }
-
-        /**
-         * get meta data of circles selected
-         */
-        circleMenuMultiple.setOnConfirmationListener(new CircleMenu.OnConfirmationListener() {
-            @Override
-            public void onConfirmation(List<Object> listData) {
-                Toast.makeText(getBaseContext(), "Size checked:" + listData.size(), Toast.LENGTH_SHORT).show();
-                for (int i =0; i< listData.size(); i++ ) {
-                    ExampleData exampleData = (ExampleData) listData.get(i);
-                    Log.d("MainActivity", "Id: " + exampleData.getId());
-                }
-            }
-        });
+    }
+});
 ```
 
 ### Multiple checks attributes on Circle Menu
