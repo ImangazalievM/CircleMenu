@@ -19,7 +19,6 @@ public class CircleMenuText extends LinearLayout {
     /* Attributes */
     private CircleMenuButton circleMenuButton;
     private TextView textTitle;
-    private String text;
 
     public CircleMenuText(Context context) {
         super(context);
@@ -47,9 +46,15 @@ public class CircleMenuText extends LinearLayout {
         textTitle.requestLayout();
     }
 
+    public void setTitleColor(Integer color) {
+        textTitle.setTextColor(color);
+        textTitle.requestLayout();
+    }
+
     private void init(Context context) {
-        this.setOrientation(VERTICAL);
-        this.setGravity(Gravity.CENTER);
+        setVisibility(INVISIBLE);
+        setOrientation(VERTICAL);
+        setGravity(Gravity.CENTER);
 
         circleMenuButton = new CircleMenuButton(context);
 
@@ -57,6 +62,7 @@ public class CircleMenuText extends LinearLayout {
         circleMenuButton.setColorNormal(R.color.color_normal);
         circleMenuButton.setColorPressed(R.color.color_pressed);
         circleMenuButton.setIconResId(R.drawable.ic_favorite);
+        circleMenuButton.setClickable(false);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -80,11 +86,24 @@ public class CircleMenuText extends LinearLayout {
         return circleMenuButton;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setMetaData(Object objectData) {
+        this.getCircleMenuButton().setMetaData(objectData);
     }
 
-    public String getText() {
-        return text;
+    public void setIconResId(Integer resId) {
+        this.getCircleMenuButton().setIconResId(resId);
     }
+
+    public void setFullDrawable(Boolean value) {
+        this.getCircleMenuButton().setFullDrawable(value);
+    }
+
+    public void setEnableBorder(Boolean value) {
+        this.getCircleMenuButton().setEnableBorder(value);
+    }
+
+    public void setColorBorder(Integer color) {
+        this.getCircleMenuButton().setColorBorder(color);
+    }
+
 }

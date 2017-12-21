@@ -117,8 +117,17 @@ public class CircleMenu extends ViewGroup implements
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             if (child != centerButton) {
-                Log.d("CircleMenu", "AQUI MISERA!: ");
                 menuController.addButton((CircleMenuText) child);
+            }
+        }
+    }
+
+    private void reverseAnimationAllChildren() {
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (child instanceof CircleMenuText) {
+                CircleMenuButton circleMenuButton = (CircleMenuButton) ((CircleMenuText) child).getCircleMenuButton();
+                circleMenuButton.reverseCheckAnimation();
             }
         }
     }
@@ -286,6 +295,9 @@ public class CircleMenu extends ViewGroup implements
         if (this.multipleCheck) {
             if (onConfirmationListener != null) {
                 onConfirmationListener.onConfirmation(listObjectData);
+            }
+            if (borderCheck) {
+                reverseAnimationAllChildren();
             }
             clearClircleMenuButtons();
         }

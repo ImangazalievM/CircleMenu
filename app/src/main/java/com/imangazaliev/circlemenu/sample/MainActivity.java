@@ -1,17 +1,16 @@
 package com.imangazaliev.circlemenu.sample;
 
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.imangazaliev.circlemenu.CircleMenu;
 import com.imangazaliev.circlemenu.CircleMenuButton;
+import com.imangazaliev.circlemenu.CircleMenuText;
 
 import java.util.List;
 
@@ -26,16 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
         //final CircleMenu circleMenuDefault = (CircleMenu) findViewById(R.id.circle_menu_default);
         final CircleMenu circleMenuMultiple = (CircleMenu) findViewById(R.id.circle_menu_multiple_border);
-
-        final Button button = (Button) findViewById(R.id.button);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), CircleMenuText.class);
-                startActivity(i);
-            }
-        });
 
         //prepareViewCircleMenuDefault(circleMenuDefault, snackbarContainer);
         prepareViewCircleMenuMultiple(circleMenuMultiple);
@@ -68,20 +57,16 @@ public class MainActivity extends AppCompatActivity {
          */
         for (int i = 0; i < 4; i ++) {
 
-            com.imangazaliev.circlemenu.CircleMenuText circleMenuText = new com.imangazaliev.circlemenu.CircleMenuText(this);
-            circleMenuText.setVisibility(View.INVISIBLE);
-            circleMenuText.getCircleMenuButton().setMetaData(new ExampleData(i));
-            circleMenuText.getCircleMenuButton().setIconResId(R.drawable.ic_favorite);
-            circleMenuText.getCircleMenuButton().setFullDrawable(false);
-            circleMenuText.getCircleMenuButton().setEnableBorder(true);
-            circleMenuText.getCircleMenuButton().setClickable(false);
+            CircleMenuText circleMenuText = new CircleMenuText(this);
+            circleMenuText.setMetaData(new ExampleData(i));
+            circleMenuText.setIconResId(R.drawable.ic_favorite);
+            circleMenuText.setFullDrawable(false);
+            circleMenuText.setEnableBorder(true);
+            circleMenuText.setClickable(false);
+            circleMenuText.setColorBorder(Color.RED);
 
-            if (i > 2){
-                circleMenuText.setTitle("NetoDevel");
-            } else {
-                circleMenuText.setTitle("Testing");
-            }
-
+            circleMenuText.setTitle("NetoDevel");
+            circleMenuText.setTitleColor(Color.BLACK);
             circleMenuMultiple.addButton(circleMenuText);
         }
 

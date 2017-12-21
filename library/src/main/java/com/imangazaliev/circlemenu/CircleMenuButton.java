@@ -47,6 +47,8 @@ public class CircleMenuButton extends AppCompatImageButton {
     private RectF mRectF;
     private Paint mPaint;
 
+    private Integer colorBorder;
+
     private boolean enableBorder;
     private boolean fullDrawable;
 
@@ -247,7 +249,7 @@ public class CircleMenuButton extends AppCompatImageButton {
     }
 
     private void addCircularBorder(Canvas canvas) {
-        this.mPaint.setColor(Color.WHITE);
+        this.mPaint.setColor(getColorBorder() != null ? getColorBorder() : Color.WHITE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             canvas.drawArc(this.mRectF, 0f, 360f, false, this.mPaint);
@@ -341,5 +343,13 @@ public class CircleMenuButton extends AppCompatImageButton {
 
     public void setFullDrawable(boolean fullDrawable) {
         this.fullDrawable = fullDrawable;
+    }
+
+    public void setColorBorder(Integer colorBorder) {
+        this.colorBorder = colorBorder;
+    }
+
+    public Integer getColorBorder() {
+        return colorBorder;
     }
 }

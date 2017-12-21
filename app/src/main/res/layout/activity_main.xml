@@ -83,10 +83,4 @@
         app:confirmation_center_drawable="@drawable/ic_send_red">
     </com.imangazaliev.circlemenu.CircleMenu>
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-
 </RelativeLayout>
