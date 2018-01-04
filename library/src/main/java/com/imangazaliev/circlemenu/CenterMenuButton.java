@@ -5,53 +5,49 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.StateListDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageButton;
+import android.view.View;
 import android.view.animation.OvershootInterpolator;
 
-public class CenterMenuButton extends CircleMenuButton {
+public class CenterMenuButton extends CircleButton {
 
-    private boolean expanded;
+    private boolean isOpened;
     private AnimatorSet preLollipopAnimationSet;
 
-    public CenterMenuButton(Context context) {
+    public  CenterMenuButton(Context context, boolean isOpened) {
         super(context);
 
-        this.expanded = false;
+        this.isOpened = isOpened;
+        int colorNormal = getResources().getColor(R.color.circle_menu_center_button_color_normal);
+        int colorPressed = getResources().getColor(R.color.circle_menu_center_button_color_pressed);
+
+        setBackgroundCompat(createBackgroundDrawable(colorNormal, colorPressed));
+        setImageResource(isOpened ? R.drawable.ic_close_vector : R.drawable.ic_menu_vector);
+
+        //setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    void updateBackground() {
-        setColorNormalResId(R.color.circle_menu_center_button_color_normal);
-        setColorPressedResId(R.color.circle_menu_center_button_color_pressed);
-        super.updateBackground();
-    }
-
-    @Override
-    Drawable getIconDrawable() {
+    public void setOpened(boolean isOpened) {
+        this.isOpened = isOpened;
         if (isVectorAnimationSupported()) {
-            return ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_vector);
-        } else {
-            return VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_vector, getContext().getTheme());
-        }
-    }
-
-    public void setExpanded(boolean isExpanded) {
-        expanded = isExpanded;
-        if (isVectorAnimationSupported()) {
-            startVectorAnimation(isExpanded);
+            startVectorAnimation(isOpened);
         } else {
             startPreLollipopAnimation();
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void startVectorAnimation(boolean isExpanded) {
-        int iconId = isExpanded ? R.drawable.ic_menu_animated : R.drawable.ic_close_animated;
+    private void startVectorAnimation(boolean isOpened) {
+        int iconId = isOpened ? R.drawable.ic_menu_animated : R.drawable.ic_close_animated;
         AnimatedVectorDrawable menuIcon = (AnimatedVectorDrawable) ContextCompat.getDrawable(getContext(), iconId);
         setImageDrawable(menuIcon);
         menuIcon.start();
@@ -83,7 +79,7 @@ public class CenterMenuButton extends CircleMenuButton {
         scaleInX.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                CenterMenuButton.this.setImageResource(expanded ? R.drawable.ic_close_vector : R.drawable.ic_menu_vector);
+                setImageResource(isOpened ? R.drawable.ic_close_vector : R.drawable.ic_menu_vector);
             }
         });
 

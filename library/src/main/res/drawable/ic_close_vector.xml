@@ -6,6 +6,6 @@
     android:viewportWidth="24.0">
     <path
         android:name="main"
-        android:fillColor="@android:color/darker_gray"
+        android:fillColor="@color/circle_menu_center_button_icon_color"
         android:pathData="@string/vector_path_close" />
 </vector>

@@ -1,12 +1,12 @@
 package com.imangazaliev.circlemenu.sample;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.imangazaliev.circlemenu.CircleMenu;
 import com.imangazaliev.circlemenu.CircleMenuButton;
@@ -18,8 +18,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ViewGroup snackbarContainer = (ViewGroup) findViewById(R.id.snackbar_contaner);
-        CircleMenu circleMenu = (CircleMenu) findViewById(R.id.circle_menu);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+        final ViewGroup snackbarContainer = findViewById(R.id.snackbar_contaner);
+        final CircleMenu circleMenu = findViewById(R.id.circle_menu);
         circleMenu.setOnItemClickListener(new CircleMenu.OnItemClickListener() {
             @Override
             public void onItemClick(CircleMenuButton menuButton) {
@@ -27,16 +29,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        circleMenu.setStateUpdateListener(new CircleMenu.OnStateUpdateListener() {
+        circleMenu.setEventListener(new CircleMenu.EventListener() {
             @Override
-            public void onMenuExpanded() {
-                Log.d("CircleMenuStatus", "Expanded");
+            public void onMenuOpenAnimationStart() {
+                Log.d("CircleMenuStatus", "onMenuOpenAnimationStart");
             }
 
             @Override
-            public void onMenuCollapsed() {
-                Log.d("CircleMenuStatus", "Collapsed");
+            public void onMenuOpenAnimationEnd() {
+                Log.d("CircleMenuStatus", "onMenuOpenAnimationEnd");
             }
+
+            @Override
+            public void onMenuCloseAnimationStart() {
+                Log.d("CircleMenuStatus", "onMenuCloseAnimationStart");
+            }
+
+            @Override
+            public void onMenuCloseAnimationEnd() {
+                Log.d("CircleMenuStatus", "onMenuCloseAnimationEnd");
+            }
+
+            @Override
+            public void onButtonClickAnimationStart(@NonNull CircleMenuButton menuButton) {
+                Log.d("CircleMenuStatus", "onButtonClickAnimationStart");
+            }
+
+            @Override
+            public void onButtonClickAnimationEnd(@NonNull CircleMenuButton menuButton) {
+                Log.d("CircleMenuStatus", "onButtonClickAnimationEnd");
+            }
+
         });
     }
 

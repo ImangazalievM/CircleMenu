@@ -3,39 +3,29 @@ package com.imangazaliev.circlemenu;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 
-public class CircleMenu extends ViewGroup implements MenuController.ControllerListener, ItemSelectionAnimator.AnimationDrawController {
+import java.util.ArrayList;
+import java.util.List;
 
-    public interface OnItemClickListener {
-        void onItemClick(CircleMenuButton menuButton);
-    }
+public class CircleMenu extends FrameLayout implements MenuControllerListener {
 
-    public interface OnStateUpdateListener {
-        void onMenuExpanded();
-
-        void onMenuCollapsed();
-    }
-
-    // Sizes of the ViewGroup
-    private float radius = -1;
+    private int distance;
     private int circleStartAngle;
+    private boolean openOnStart;
     private boolean hintsEnabled;
+    private int calculatedSize;
 
     private CenterMenuButton centerButton;
-
     private MenuController menuController;
-    private ItemSelectionAnimator itemSelectionAnimator;
 
-    private OnStateUpdateListener stateUpdateListener;
+    private EventListener eventListener;
     private OnItemClickListener onItemClickListener;
-
-    public CircleMenu(Context context) {
-        this(context, null);
-    }
 
     public CircleMenu(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -50,183 +40,123 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
 
     private void init(AttributeSet attrs) {
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.CircleMenu);
+
         try {
-            circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_start_angle, getResources().getInteger(R.integer.circle_menu_start_angle));
-            radius = typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
+            circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_startAngle, getResources().getInteger(R.integer.circle_menu_start_angle));
+            distance = (int) typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
+            openOnStart = typedArray.getBoolean(R.styleable.CircleMenu_openOnStart, false);
             hintsEnabled = typedArray.getBoolean(R.styleable.CircleMenu_hintsEnabled, false);
         } finally {
             typedArray.recycle();
         }
 
-        menuController = new MenuController(this, hintsEnabled);
-        itemSelectionAnimator = new ItemSelectionAnimator(menuController, this);
+        float buttonSize = getResources().getDimension(R.dimen.circle_menu_button_size);
+        int ringRadius = (int) (buttonSize + (distance - buttonSize / 2));
+        calculatedSize = (int) (ringRadius * 2 * ItemSelectionAnimator.END_CIRCLE_SIZE_RATIO);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        addChildrenToController();
-        createCenterButton(getContext());
+        createCenterButton();
     }
 
-    private void addChildrenToController() {
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            if (child != centerButton) {
-                menuController.addButton((CircleMenuButton) child);
-            }
-        }
-    }
-
-    private void createCenterButton(Context context) {
-        centerButton = new CenterMenuButton(context);
+    private void createCenterButton() {
+        centerButton = new CenterMenuButton(getContext(), openOnStart);
         centerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                menuController.toggle();
+                toggle();
+            }
+        });
+        LayoutParams centerButtonParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        centerButtonParams.gravity = Gravity.CENTER;
+
+        centerButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                centerButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                initMenuController();
             }
         });
 
-        addView(centerButton, super.generateDefaultLayoutParams());
+        addView(centerButton, centerButtonParams);
+    }
+
+    private void initMenuController() {
+        List<CircleMenuButton> buttons = new ArrayList<>();
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (child != centerButton) {
+                buttons.add((CircleMenuButton) child);
+            }
+        }
+
+        menuController = new MenuController(getContext(), buttons, this, centerButton.getX(), centerButton.getY(),
+                circleStartAngle, distance, openOnStart, hintsEnabled);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        measureChildren(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        // Measure child views first
-        int maxChildWidth = 0;
-        int maxChildHeight = 0;
+        final int w = resolveSizeAndState(calculatedSize, widthMeasureSpec, 0);
+        final int h = resolveSizeAndState(calculatedSize, heightMeasureSpec, 0);
 
-        int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST);
-        int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST);
-
-        final int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            final View child = getChildAt(i);
-            if (child.getVisibility() == GONE) {
-                continue;
-            }
-
-            measureChild(child, childWidthMeasureSpec, childHeightMeasureSpec);
-
-            maxChildWidth = Math.max(maxChildWidth, child.getMeasuredWidth());
-            maxChildHeight = Math.max(maxChildHeight, child.getMeasuredHeight());
-        }
-
-        // Then decide what size we want to be
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
-        int width;
-        int height;
-
-        //Measure Width
-        if (widthMode == MeasureSpec.EXACTLY) {
-            //Must be this size
-            width = widthSize;
-        } else if (widthMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
-            width = Math.min(widthSize, heightSize);
-        } else {
-            //Be whatever you want
-            width = maxChildWidth * 3;
-        }
-
-        //Measure Height
-        if (heightMode == MeasureSpec.EXACTLY) {
-            //Must be this size
-            height = heightSize;
-        } else if (heightMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
-            height = Math.min(heightSize, widthSize);
-        } else {
-            //Be whatever you want
-            height = maxChildHeight * 3;
-        }
-
-        setMeasuredDimension(resolveSize(width, widthMeasureSpec), resolveSize(height, heightMeasureSpec));
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int circleHeight = getHeight();
-        int circleWidth = getWidth();
-
-        int centerButtonWidth = centerButton.getMeasuredWidth();
-        int centerButtonHeight = centerButton.getMeasuredHeight();
-        int centerButtonX = Math.round((float) ((circleWidth / 2.0) - centerButtonWidth / 2.0));
-        int centerButtonY = Math.round((float) ((circleHeight / 2.0) - centerButtonHeight / 2.0));
-        centerButton.layout(centerButtonX, centerButtonY, centerButtonX + centerButtonWidth, centerButtonY + centerButtonHeight);
-
-        menuController.calculateButtonsVertices(radius, circleStartAngle, circleWidth, circleHeight);
-        itemSelectionAnimator.setCircleRadius(radius, circleWidth, circleHeight);
+        setMeasuredDimension(w, h);
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
-        itemSelectionAnimator.onDraw(canvas);
+        menuController.onDraw(canvas);
     }
 
     @Override
-    public void onStartExpanding() {
-        centerButton.setExpanded(true);
+    public void onOpenAnimationStart() {
         centerButton.setClickable(false);
-    }
+        centerButton.setOpened(true);
 
-    @Override
-    public void onExpanded() {
-        centerButton.setClickable(true);
-
-        if (stateUpdateListener != null) {
-            stateUpdateListener.onMenuExpanded();
+        if (eventListener != null) {
+            eventListener.onMenuOpenAnimationStart();
         }
     }
 
     @Override
-    public void onSelectAnimationStarted() {
-        centerButton.setClickable(false);
-    }
-
-    @Override
-    public void onSelectAnimationFinished() {
-
-    }
-
-    @Override
-    public void onExitAnimationStarted() {
-
-    }
-
-    @Override
-    public void onExitAnimationFinished() {
-        centerButton.setClickable(true);
-    }
-
-    @Override
-    public void onStartCollapsing() {
-        centerButton.setExpanded(false);
-        centerButton.setClickable(false);
-    }
-
-    @Override
-    public void onCollapsed() {
+    public void onOpenAnimationEnd() {
         centerButton.setClickable(true);
 
-        if (stateUpdateListener != null) {
-            stateUpdateListener.onMenuCollapsed();
+        if (eventListener != null) {
+            eventListener.onMenuOpenAnimationEnd();
         }
     }
 
     @Override
-    public void onItemClick(CircleMenuButton menuButton) {
-        centerButton.setExpanded(false);
-        itemSelectionAnimator.onItemClick(menuButton, menuController.getButtonsPoint(menuButton));
+    public void onCloseAnimationStart() {
+        centerButton.setClickable(false);
+        centerButton.setOpened(false);
+
+        if (eventListener != null) {
+            eventListener.onMenuCloseAnimationStart();
+        }
+    }
+
+    @Override
+    public void onCloseAnimationEnd() {
+        centerButton.setClickable(true);
+
+        if (eventListener != null) {
+            eventListener.onMenuCloseAnimationEnd();
+        }
+    }
+
+    @Override
+    public void onSelectAnimationStart(CircleMenuButton menuButton) {
+        centerButton.setOpened(false);
+        centerButton.setClickable(false);
 
         if (onItemClickListener != null) {
             onItemClickListener.onItemClick(menuButton);
@@ -234,9 +164,10 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
     }
 
     @Override
-    public void onItemLongClick(CircleMenuButton menuButton) {
-        if (hintsEnabled) {
-            Toast.makeText(getContext(), menuButton.getHintText(), Toast.LENGTH_SHORT).show();
+    public void onSelectAnimationEnd(CircleMenuButton menuButton) {
+        centerButton.setClickable(true);
+        if (eventListener != null) {
+            eventListener.onButtonClickAnimationEnd(menuButton);
         }
     }
 
@@ -249,21 +180,44 @@ public class CircleMenu extends ViewGroup implements MenuController.ControllerLi
         this.onItemClickListener = onItemClickListener;
     }
 
-    public void setStateUpdateListener(OnStateUpdateListener listener) {
-        this.stateUpdateListener = listener;
+    public void setEventListener(EventListener listener) {
+        this.eventListener = listener;
     }
 
     public void toggle() {
         menuController.toggle();
     }
 
-    public boolean isExpanded() {
-        return menuController.isExpanded();
+    public void open(boolean animate) {
+        menuController.open(animate);
     }
 
-    public void addButton(CircleMenuButton menuButton) {
-        addView(menuButton, getChildCount() - 1);
-        menuController.addButton(menuButton);
+    public void close(boolean animate) {
+        menuController.close(animate);
     }
+
+    public boolean isOpened() {
+        return menuController.isOpened();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(CircleMenuButton menuButton);
+    }
+
+    public interface EventListener {
+
+        void onMenuOpenAnimationStart();
+
+        void onMenuOpenAnimationEnd();
+
+        void onMenuCloseAnimationStart();
+
+        void onMenuCloseAnimationEnd();
+
+        void onButtonClickAnimationStart(@NonNull CircleMenuButton menuButton);
+
+        void onButtonClickAnimationEnd(@NonNull CircleMenuButton menuButton);
+    }
+
 
 }

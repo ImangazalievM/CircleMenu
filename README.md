@@ -15,7 +15,7 @@ CircleMenu is a simple, elegant menu with a circular layout.
 Add this to your app build.gradle:
 
 ```gradle
-compile 'com.github.imangazalievm:circlemenu:1.1.1'
+compile 'com.github.imangazalievm:circlemenu:2.0.0'
 ```
 
 # Usage
@@ -27,8 +27,7 @@ Add to your layout xml-file:
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:id="@+id/circleMenu"
-        >
+        android:id="@+id/circleMenu">
 
         <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/favorite"
@@ -36,8 +35,7 @@ Add to your layout xml-file:
             android:layout_height="wrap_content"
             app:colorNormal="#2196F3"
             app:colorPressed="#1E88E5"
-            app:icon="@drawable/ic_favorite"
-            />
+            app:icon="@drawable/ic_favorite"/>
 
         <com.imangazaliev.circlemenu.CircleMenuButton
             android:id="@+id/search"
@@ -57,6 +55,7 @@ Add to your layout xml-file:
 
 </com.imangazaliev.circlemenu.CircleMenu>
 ```
+
 Set OnItemClickListener for handling menu items clicks:
 
 ```java
@@ -68,23 +67,59 @@ circleMenu.setOnItemClickListener(new CircleMenu.OnItemClickListener() {
     }
 });
 ```
+
+If you want to open menu in start, just add `isOpened` attribute in XML:
+
+```xml
+<com.imangazaliev.circlemenu.CircleMenu
+        ...
+        app:openOnStart="true">
+```
+
+You can use open(boolean animate) and close(boolean animate) methods, to open and close menu programmatically:
+
+```java
+circleMenu.open(true);
+```
+
 Set OnStateUpdateListener for handling open/close actions
 
 ```java
-circleMenu.setStateUpdateListener(new CircleMenu.OnStateUpdateListener() {
-    @Override
-    public void onMenuExpanded() {
-        
-    }
+circleMenu.setEventListener(new CircleMenu.EventListener() {
+            @Override
+            public void onMenuOpenAnimationStart() {
 
-    @Override
-    public void onMenuCollapsed() {
+            }
 
-    }
-});
+            @Override
+            public void onMenuOpenAnimationEnd() {
+
+            }
+
+            @Override
+            public void onMenuCloseAnimationStart() {
+
+            }
+
+            @Override
+            public void onMenuCloseAnimationEnd() {
+
+            }
+
+            @Override
+            public void onButtonClickAnimationStart(@NonNull CircleMenuButton menuButton) {
+
+            }
+
+            @Override
+            public void onButtonClickAnimationEnd(@NonNull CircleMenuButton menuButton) {
+
+            }
+
+        });
 ```
 
-Also you can enable hints, that shows in Toast by long pressing a button
+You can also enable hints, that shows in Toast by long pressing a button
 
 ```xml
 <com.imangazaliev.circlemenu.CircleMenu

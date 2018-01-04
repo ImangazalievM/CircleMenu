@@ -3,7 +3,7 @@
     android:id="@+id/snackbar_contaner"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#212121">
+    android:background="#000000">
 
     <com.imangazaliev.circlemenu.CircleMenu
         android:id="@+id/circle_menu"

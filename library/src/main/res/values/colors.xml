@@ -7,6 +7,6 @@
 
     <color name="circle_menu_center_button_color_normal">#ffffff</color>
     <color name="circle_menu_center_button_color_pressed">#eeeeee</color>
-    <color name="circle_menu_center_button_color_opened">#88ffffff</color>
+    <color name="circle_menu_center_button_icon_color">#444444</color>
 
 </resources>

@@ -1,301 +1,187 @@
 package com.imangazaliev.circlemenu;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.os.Handler;
+import android.content.Context;
+import android.graphics.Canvas;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 class MenuController {
 
-    private static final int TOGGLE_ANIMATION_DELAY = 100;
     private static final int TOGGLE_ANIMATION_DURATION = 200;
 
-    interface ControllerListener {
+    private List<CircleMenuButton> buttons;
+    private float menuCenterX, menuCenterY;
+    private float startAngle;
+    private int distance;
+    private boolean isOpened;
 
-        void onStartCollapsing();
+    private final ItemSelectionAnimator itemSelectionAnimator;
+    private final MenuControllerListener listener;
 
-        void onCollapsed();
 
-        void onStartExpanding();
-
-        void onExpanded();
-
-        void onSelectAnimationStarted();
-
-        void onSelectAnimationFinished();
-
-        void onExitAnimationStarted();
-
-        void onExitAnimationFinished();
-
-        void onItemClick(CircleMenuButton menuButton);
-
-        void onItemLongClick(CircleMenuButton menuButton);
-
-    }
-
-    private List<CircleMenuButton> buttons = new ArrayList<>();
-    private HashMap<CircleMenuButton, MenuButtonPoint> buttonsPositions = new HashMap<>();
-    private final ControllerListener listener;
-
-    private View.OnClickListener onButtonItemClickListener;
-    private View.OnLongClickListener onButtonItemLongClickListener;
-
-    @MenuState
-    private int state;
-
-    MenuController(ControllerListener listener, final boolean hintsEnabled) {
+    MenuController(Context context,
+                   List<CircleMenuButton> menuButtons,
+                   MenuControllerListener listener,
+                   float menuCenterX,
+                   float menuCenterY,
+                   final float startAngle,
+                   int distance,
+                   boolean openOnStart,
+                   final boolean hintsEnabled) {
+        this.buttons = menuButtons;
+        this.menuCenterX = menuCenterX;
+        this.menuCenterY = menuCenterY;
+        this.startAngle = startAngle;
+        this.distance = distance;
+        this.isOpened = openOnStart;
         this.listener = listener;
-        this.state = MenuState.COLLAPSED;
-        this.onButtonItemClickListener = new View.OnClickListener() {
+        this.itemSelectionAnimator = new ItemSelectionAnimator(context, this, listener, menuCenterX, menuCenterY, distance);
+
+        View.OnClickListener onButtonItemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClick((CircleMenuButton) v);
+                CircleMenuButton menuButton = (CircleMenuButton) v;
+                float buttonAngle = (360f / buttons.size()) * buttons.indexOf(menuButton) + startAngle;
+                itemSelectionAnimator.startSelectAnimation(menuButton, buttonAngle);
             }
         };
-        this.onButtonItemLongClickListener = new View.OnLongClickListener() {
+        View.OnLongClickListener onButtonItemLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onItemLongClick((CircleMenuButton) v);
+                CircleMenuButton menuButton = (CircleMenuButton) v;
+                if (hintsEnabled) {
+                    Toast.makeText(menuButton.getContext(), menuButton.getHintText(), Toast.LENGTH_SHORT).show();
+                }
                 return hintsEnabled;
             }
         };
+
+        for (CircleMenuButton menuButton : buttons) {
+            menuButton.setOnClickListener(onButtonItemClickListener);
+            menuButton.setOnLongClickListener(onButtonItemLongClickListener);
+        }
+
+        layoutButtons(openOnStart ? distance : 0);
     }
 
-    void calculateButtonsVertices(float radius, int startAngle, int circleWidth, int circleHeight) {
-        int collapsedX, collapsedY, expandedX, expandedY;
-        int buttonWidth, buttonHeight;
-        int childCount = getButtonsCount();
+    void onDraw(Canvas canvas) {
+        itemSelectionAnimator.onDraw(canvas);
+    }
 
-        float angleStep = 360.0f / (childCount);
+    void toggle() {
+        if (isOpened()) {
+            close(true);
+        } else {
+            open(true);
+        }
+    }
+
+    void open(boolean animate) {
+        if (isOpened) {
+            return;
+        }
+
+        enableButtons(false);
+        layoutButtons(0);
+        showButtons(true);
+        listener.onOpenAnimationStart();
+
+        ValueAnimator buttonAnimator = ValueAnimator.ofFloat(0f, distance);
+        buttonAnimator.setDuration(animate? TOGGLE_ANIMATION_DURATION : 0);
+        buttonAnimator.setInterpolator(new DecelerateInterpolator());
+        buttonAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                layoutButtons((float) animation.getAnimatedValue());
+            }
+        });
+        buttonAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isOpened = true;
+                enableButtons(true);
+                listener.onOpenAnimationEnd();
+            }
+        });
+        buttonAnimator.start();
+    }
+
+    void close(boolean animate) {
+        if (!isOpened) {
+            return;
+        }
+
+        enableButtons(false);
+        layoutButtons(distance);
+        listener.onCloseAnimationStart();
+
+        ValueAnimator buttonAnimator = ValueAnimator.ofFloat(distance, 0f);
+        buttonAnimator.setDuration(animate? TOGGLE_ANIMATION_DURATION : 0);
+        buttonAnimator.setInterpolator(new DecelerateInterpolator());
+        buttonAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                layoutButtons((float) animation.getAnimatedValue());
+            }
+        });
+        buttonAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isOpened = false;
+                showButtons(false);
+                listener.onCloseAnimationEnd();
+            }
+        });
+        buttonAnimator.start();
+    }
+
+    private void layoutButtons(float distance) {
+        int buttonsCount = buttons.size();
+        float angleStep = 360.0f / buttonsCount;
         float lastAngle = startAngle;
 
-        for (int i = 0; i < childCount; i++) {
-            final CircleMenuButton button = buttons.get(i);
+        for (int i = 0; i < buttonsCount; i++) {
+            CircleMenuButton button = buttons.get(i);
 
-            if (button.getVisibility() == View.GONE) {
-                continue;
-            }
+            float x = Math.round((float) (menuCenterX + distance * Math.cos(Math.toRadians(lastAngle))));
+            float y = Math.round((float) (menuCenterY + distance * Math.sin(Math.toRadians(lastAngle))));
 
-            buttonWidth = button.getMeasuredWidth();
-            buttonHeight = button.getMeasuredHeight();
-
-            collapsedX = Math.round((float) ((circleWidth / 2.0) - buttonWidth / 2.0));
-            collapsedY = Math.round((float) ((circleHeight / 2.0) - buttonHeight / 2.0));
-            expandedX = Math.round((float) (collapsedX + radius * Math.cos(Math.toRadians(lastAngle))));
-            expandedY = Math.round((float) (collapsedY + radius * Math.sin(Math.toRadians(lastAngle))));
-
-            MenuButtonPoint menuButtonPoint = new MenuButtonPoint(collapsedX, collapsedY, expandedX, expandedY, lastAngle);
-            buttonsPositions.put(button, menuButtonPoint);
+            button.setX(x);
+            button.setY(y);
 
             if (lastAngle > 360) {
                 lastAngle -= 360;
-            } else if (lastAngle < 0) {
-                lastAngle += 360;
             }
-
-            button.layout(collapsedX, collapsedY, collapsedX + buttonWidth, collapsedY + buttonHeight);
 
             lastAngle += angleStep;
         }
 
     }
 
-    void toggle() {
-        if (isExpanded()) {
-            startCollapseAnimation();
-        } else {
-            startExpandAnimation();
+    void setOpened(boolean isOpened) {
+        this.isOpened = isOpened;
+    }
+
+    boolean isOpened() {
+        return isOpened;
+    }
+
+    void enableButtons(boolean enabled) {
+        for (CircleMenuButton button : buttons) {
+            button.setEnabled(enabled);
         }
     }
 
-    private void startCollapseAnimation() {
-        setButtonsStartPosition(false);
-        setState(MenuState.COLLAPSE_ANIMATION_STARTED);
-
-        for (final CircleMenuButton button : buttons) {
-            MenuButtonPoint buttonPosition = buttonsPositions.get(button);
-
-            //x axis animation
-            ValueAnimator buttonAnimatorX = ValueAnimator.ofFloat(buttonPosition.expandedX, buttonPosition.collapsedX);
-            buttonAnimatorX.setInterpolator(new DecelerateInterpolator());
-            buttonAnimatorX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    button.setX((float) animation.getAnimatedValue() - button.getLayoutParams().width / 2);
-                    button.requestLayout();
-                }
-            });
-            buttonAnimatorX.setDuration(TOGGLE_ANIMATION_DURATION);
-            buttonAnimatorX.setStartDelay(TOGGLE_ANIMATION_DELAY);
-            buttonAnimatorX.start();
-
-            //y axis animation
-            ValueAnimator buttonAnimatorY = ValueAnimator.ofFloat(buttonPosition.expandedY, buttonPosition.collapsedY);
-            buttonAnimatorY.setInterpolator(new DecelerateInterpolator());
-            buttonAnimatorY.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    button.setY((float) animation.getAnimatedValue() - button.getLayoutParams().height / 2);
-                    button.requestLayout();
-                }
-            });
-            buttonAnimatorY.setDuration(TOGGLE_ANIMATION_DURATION);
-            buttonAnimatorY.setStartDelay(TOGGLE_ANIMATION_DELAY);
-            buttonAnimatorY.start();
+    void showButtons(boolean visible) {
+        for (CircleMenuButton button : buttons) {
+            button.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
         }
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setState(MenuState.COLLAPSED);
-            }
-        }, TOGGLE_ANIMATION_DURATION);
-    }
-
-    private void startExpandAnimation() {
-        setButtonsStartPosition(true);
-        setState(MenuState.EXPAND_ANIMATION_STARTED);
-
-        for (final CircleMenuButton button : buttons) {
-            MenuButtonPoint buttonPosition = buttonsPositions.get(button);
-
-            //x axis animation
-            ValueAnimator buttonAnimatorX = ValueAnimator.ofFloat(buttonPosition.collapsedX, buttonPosition.expandedX);
-            buttonAnimatorX.setInterpolator(new DecelerateInterpolator());
-            buttonAnimatorX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    button.setX((float) animation.getAnimatedValue() - button.getLayoutParams().width / 2);
-                    button.requestLayout();
-                }
-            });
-            buttonAnimatorX.setDuration(TOGGLE_ANIMATION_DURATION);
-            buttonAnimatorX.setStartDelay(TOGGLE_ANIMATION_DELAY);
-            buttonAnimatorX.start();
-
-            //y axis animation
-            ValueAnimator buttonAnimatorY = ValueAnimator.ofFloat(buttonPosition.collapsedY, buttonPosition.expandedY);
-            buttonAnimatorY.setInterpolator(new DecelerateInterpolator());
-            buttonAnimatorY.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    button.setY((float) animation.getAnimatedValue() - button.getLayoutParams().height / 2);
-                    button.requestLayout();
-                }
-            });
-            buttonAnimatorY.setDuration(TOGGLE_ANIMATION_DURATION);
-            buttonAnimatorY.setStartDelay(TOGGLE_ANIMATION_DELAY);
-            buttonAnimatorY.start();
-        }
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setState(MenuState.EXPANDED);
-            }
-        }, TOGGLE_ANIMATION_DURATION);
-    }
-
-    private void setButtonsStartPosition(boolean collapsed) {
-        for (final CircleMenuButton button : buttons) {
-            MenuButtonPoint buttonPosition = buttonsPositions.get(button);
-            button.setX(collapsed ? buttonPosition.collapsedX : buttonPosition.expandedX);
-            button.setY(collapsed ? buttonPosition.collapsedY : buttonPosition.expandedY);
-        }
-    }
-
-    void setState(@MenuState int state) {
-        this.state = state;
-        switch (state) {
-            case MenuState.EXPAND_ANIMATION_STARTED:
-                disableItems();
-                showItems();
-                listener.onStartExpanding();
-                break;
-            case MenuState.EXPANDED:
-                enableItems();
-                listener.onExpanded();
-                break;
-            case MenuState.COLLAPSE_ANIMATION_STARTED:
-                disableItems();
-                listener.onStartCollapsing();
-                break;
-            case MenuState.COLLAPSED:
-                hideItems();
-                listener.onCollapsed();
-                break;
-            case MenuState.SELECT_ANIMATION_STARTED:
-                disableItems();
-                listener.onSelectAnimationStarted();
-                break;
-            case MenuState.SELECT_ANIMATION_FINISHED:
-                hideItems();
-                listener.onSelectAnimationFinished();
-                break;
-            case MenuState.EXIT_ANIMATION_STARTED:
-                listener.onExitAnimationStarted();
-                break;
-            case MenuState.EXIT_ANIMATION_FINISHED:
-                listener.onExitAnimationFinished();
-                break;
-        }
-    }
-
-    boolean isExpanded() {
-        return state == MenuState.EXPANDED;
-    }
-
-    void addButton(final CircleMenuButton menuButton) {
-        buttons.add(menuButton);
-        menuButton.setOnClickListener(onButtonItemClickListener);
-        menuButton.setOnLongClickListener(onButtonItemLongClickListener);
-    }
-
-    private void onItemClick(CircleMenuButton menuButton) {
-        if (listener != null) {
-            listener.onItemClick(menuButton);
-        }
-    }
-
-    private void onItemLongClick(CircleMenuButton menuButton) {
-            listener.onItemLongClick(menuButton);
-    }
-
-    private int getButtonsCount() {
-        return buttons.size();
-    }
-
-    private void disableItems() {
-        for (int i = 0; i < getButtonsCount(); i++) {
-            buttons.get(i).setClickable(false);
-        }
-    }
-
-    private void enableItems() {
-        for (int i = 0; i < getButtonsCount(); i++) {
-            buttons.get(i).setClickable(true);
-        }
-    }
-
-    private void hideItems() {
-        for (int i = 0; i < getButtonsCount(); i++) {
-            buttons.get(i).setVisibility(View.GONE);
-        }
-    }
-
-    private void showItems() {
-        for (int i = 0; i < getButtonsCount(); i++) {
-            buttons.get(i).setVisibility(View.VISIBLE);
-        }
-    }
-
-    MenuButtonPoint getButtonsPoint(CircleMenuButton menuButton) {
-        return buttonsPositions.get(menuButton);
     }
 
 }
