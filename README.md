@@ -1,4 +1,4 @@
-![](https://github.com/ImangazalievM/CircleMenu/blob/master/art/splash.png)
+<img src="https://github.com/ImangazalievM/CircleMenu/blob/master/art/splash.png" width="100%">
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-CircleMenu-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5361)
 ![minSdkVersion 21](https://img.shields.io/badge/minSdkVersion-15-blue.svg)
