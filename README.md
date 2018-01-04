@@ -1,16 +1,15 @@
-# CircleMenu
+![](https://github.com/ImangazalievM/CircleMenu/blob/master/art/splash.png)
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-CircleMenu-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5361)
 ![minSdkVersion 21](https://img.shields.io/badge/minSdkVersion-15-blue.svg)
-[ ![Download](https://api.bintray.com/packages/imangazaliev/maven/circlemenu/images/download.svg) ](https://bintray.com/imangazaliev/maven/circlemenu/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/imangazaliev/maven/circlemenu/images/download.svg) ](https://bintray.com/imangazaliev/maven/ciraclemenu/_latestVersion)
 
-<img src="https://github.com/ImangazalievM/CircleMenu/blob/master/art/splash.png" width="100%">
 
 CircleMenu is a simple, elegant menu with a circular layout.
 
 <img src="https://github.com/ImangazalievM/CircleMenu/blob/master/art/preview.gif" width="33%">
 
-# Setup
+## Setup
 
 Add this to your app build.gradle:
 
@@ -18,7 +17,7 @@ Add this to your app build.gradle:
 compile 'com.github.imangazalievm:circlemenu:2.0.0'
 ```
 
-# Usage
+## Usage
 
 Add to your layout xml-file:
 
@@ -137,6 +136,7 @@ You can also enable hints, that shows in Toast by long pressing a button
 
 ## License
 
+```
 The MIT License
 
 Copyright (c) 2016 Mahach Imangazaliev 
@@ -146,3 +146,4 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
