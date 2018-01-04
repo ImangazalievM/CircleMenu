@@ -85,37 +85,37 @@ Set OnStateUpdateListener for handling open/close actions
 
 ```java
 circleMenu.setEventListener(new CircleMenu.EventListener() {
-            @Override
-            public void onMenuOpenAnimationStart() {
+    @Override
+    public void onMenuOpenAnimationStart() {
 
-            }
+    }
 
-            @Override
-            public void onMenuOpenAnimationEnd() {
+    @Override
+    public void onMenuOpenAnimationEnd() {
 
-            }
+    }
 
-            @Override
-            public void onMenuCloseAnimationStart() {
+    @Override
+    public void onMenuCloseAnimationStart() {
 
-            }
+    }
 
-            @Override
-            public void onMenuCloseAnimationEnd() {
+    @Override
+    public void onMenuCloseAnimationEnd() {
 
-            }
+    }
 
-            @Override
-            public void onButtonClickAnimationStart(@NonNull CircleMenuButton menuButton) {
+    @Override
+    public void onButtonClickAnimationStart(@NonNull CircleMenuButton menuButton) {
 
-            }
+    }
 
-            @Override
-            public void onButtonClickAnimationEnd(@NonNull CircleMenuButton menuButton) {
+    @Override
+    public void onButtonClickAnimationEnd(@NonNull CircleMenuButton menuButton) {
 
-            }
+    }
 
-        });
+});
 ```
 
 You can also enable hints, that shows in Toast by long pressing a button
