@@ -81,7 +81,7 @@ You can use ```open(boolean animate)``` and ```close(boolean animate)``` methods
 circleMenu.open(true);
 ```
 
-Set OnStateUpdateListener for handling open/close actions
+Set EventListener for handling open/close actions
 
 ```java
 circleMenu.setEventListener(new CircleMenu.EventListener() {
