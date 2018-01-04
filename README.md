@@ -67,7 +67,7 @@ circleMenu.setOnItemClickListener(new CircleMenu.OnItemClickListener() {
 });
 ```
 
-If you want to open menu in start, just add `isOpened` attribute in XML:
+If you want to open menu in start, just add `openOnStart` attribute in XML:
 
 ```xml
 <com.imangazaliev.circlemenu.CircleMenu
@@ -75,7 +75,7 @@ If you want to open menu in start, just add `isOpened` attribute in XML:
         app:openOnStart="true">
 ```
 
-You can use open(boolean animate) and close(boolean animate) methods, to open and close menu programmatically:
+You can use ```open(boolean animate)``` and ```close(boolean animate)``` methods, to open and close menu programmatically:
 
 ```java
 circleMenu.open(true);
