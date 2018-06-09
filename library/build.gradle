@@ -6,7 +6,7 @@ final LIBRARY_VERSION_CODE = 7
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.2"
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         minSdkVersion 15
@@ -34,11 +34,12 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
 }
 
 // это блок будет обработан плагином bintray-release
 publish {
+    userOrg = 'ImangazalievM'
     groupId = 'com.github.imangazalievm'
     artifactId = 'circlemenu'
     publishVersion = LIBRARY_VERSION_NAME

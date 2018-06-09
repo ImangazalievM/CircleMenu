@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.2"
+    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.imangazaliev.circlemenu.sample"
         minSdkVersion 15
@@ -29,7 +29,7 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:27.0.2"
-    compile "com.android.support:design:27.0.2"
-    compile project(':library')
+    implementation "com.android.support:appcompat-v7:27.1.1"
+    implementation "com.android.support:design:27.1.1"
+    implementation project(':library')
 }

@@ -2,6 +2,7 @@
 
 buildscript {
     repositories {
+        google()
         jcenter()
         maven {
             url 'https://maven.google.com/'
@@ -9,13 +10,14 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
-        classpath 'com.novoda:bintray-release:0.3.4'
+        classpath 'com.android.tools.build:gradle:3.1.0-alpha06'
+        classpath 'com.novoda:bintray-release:0.8.1'
     }
 }
 
 allprojects {
     repositories {
+        google()
         jcenter()
         maven {
             url 'https://maven.google.com/'
