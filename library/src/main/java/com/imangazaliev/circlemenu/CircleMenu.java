@@ -161,6 +161,10 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
         if (onItemClickListener != null) {
             onItemClickListener.onItemClick(menuButton);
         }
+
+        if (eventListener != null) {
+            eventListener.onButtonClickAnimationStart(menuButton);
+        }
     }
 
     @Override

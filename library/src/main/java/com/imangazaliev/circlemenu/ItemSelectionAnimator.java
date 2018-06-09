@@ -148,7 +148,6 @@ class ItemSelectionAnimator {
                     currentCircleStrokeWidth = originalCircleStrokeWidth;
                     controllerListener.redrawView();
 
-
                     controllerListener.onSelectAnimationEnd(currentMenuButton);
                     menuController.setOpened(false);
                     currentMenuButton = null;
