@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
-final LIBRARY_VERSION_NAME = '2.0.1'
-final LIBRARY_VERSION_CODE = 7
+final LIBRARY_VERSION_NAME = '2.0.2'
+final LIBRARY_VERSION_CODE = 8
 
 android {
     compileSdkVersion 27
@@ -39,7 +39,7 @@ dependencies {
 
 // это блок будет обработан плагином bintray-release
 publish {
-    userOrg = 'ImangazalievM'
+    userOrg = 'imangazaliev'
     groupId = 'com.github.imangazalievm'
     artifactId = 'circlemenu'
     publishVersion = LIBRARY_VERSION_NAME
