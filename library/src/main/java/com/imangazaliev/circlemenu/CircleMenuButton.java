@@ -19,12 +19,14 @@ public class CircleMenuButton extends CircleButton {
 
     private int colorNormal;
     private String hintText;
+    private boolean isShowClickAnim;
 
     public CircleMenuButton(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.CircleMenuButton, 0, 0);
         colorNormal = attr.getColor(R.styleable.CircleMenuButton_colorNormal, getResources().getColor(R.color.circle_menu_button_color_normal));
+        isShowClickAnim = attr.getBoolean(R.styleable.CircleMenuButton_showClickAnim, true);
         int colorPressed = attr.getColor(R.styleable.CircleMenuButton_colorPressed, getResources().getColor(R.color.circle_menu_button_color_pressed));
         hintText = attr.getString(R.styleable.CircleMenuButton_hintText);
         int iconId = attr.getResourceId(R.styleable.CircleMenuButton_icon, 0);
@@ -47,6 +49,7 @@ public class CircleMenuButton extends CircleButton {
         return hintText;
     }
 
-
-
+    public boolean isShowClickAnim() {
+        return isShowClickAnim;
+    }
 }

@@ -50,8 +50,10 @@ class MenuController {
             @Override
             public void onClick(View v) {
                 CircleMenuButton menuButton = (CircleMenuButton) v;
-                float buttonAngle = (angleRange / buttons.size()) * buttons.indexOf(menuButton) + startAngle;
-                itemSelectionAnimator.startSelectAnimation(menuButton, buttonAngle);
+                if (menuButton.isShowClickAnim()) {
+                    float buttonAngle = (angleRange / buttons.size()) * buttons.indexOf(menuButton) + startAngle;
+                    itemSelectionAnimator.startSelectAnimation(menuButton, buttonAngle);
+                }
             }
         };
         View.OnLongClickListener onButtonItemLongClickListener = new View.OnLongClickListener() {

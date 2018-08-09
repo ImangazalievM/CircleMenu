@@ -13,6 +13,7 @@
         <attr name="colorPressed" format="color"/>
         <attr name="icon" format="reference"/>
         <attr name="hintText" format="string"/>
+        <attr name="showClickAnim" format="boolean" />
     </declare-styleable>
 
 
