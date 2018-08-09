@@ -17,6 +17,7 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
 
     private int distance;
     private int circleStartAngle;
+    private int angleRange;
     private boolean openOnStart;
     private boolean hintsEnabled;
     private int calculatedSize;
@@ -43,6 +44,7 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
 
         try {
             circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_startAngle, getResources().getInteger(R.integer.circle_menu_start_angle));
+            angleRange = typedArray.getInteger(R.styleable.CircleMenu_angleRange, 360);
             distance = (int) typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
             openOnStart = typedArray.getBoolean(R.styleable.CircleMenu_openOnStart, false);
             hintsEnabled = typedArray.getBoolean(R.styleable.CircleMenu_hintsEnabled, false);
@@ -95,7 +97,7 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
         }
 
         menuController = new MenuController(getContext(), buttons, this, centerButton.getX(), centerButton.getY(),
-                circleStartAngle, distance, openOnStart, hintsEnabled);
+                circleStartAngle, angleRange, distance, openOnStart, hintsEnabled);
     }
 
     @Override
