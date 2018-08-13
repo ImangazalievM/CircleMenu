@@ -195,6 +195,18 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
         this.eventListener = listener;
     }
 
+    public void setCircleStartAngle(int circleStartAngle) {
+        this.circleStartAngle = circleStartAngle;
+    }
+
+    public void setAngleRange(int angleRange) {
+        this.angleRange = angleRange;
+    }
+
+    public void setCenterButtonGravity(int centerButtonGravity) {
+        this.centerButtonGravity = centerButtonGravity;
+    }
+
     public void toggle() {
         menuController.toggle();
     }
