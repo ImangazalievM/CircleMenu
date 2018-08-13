@@ -59,4 +59,12 @@
 
     </com.imangazaliev.circlemenu.CircleMenu>
 
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Custom CircleMenu-1"
+        android:onClick="customCircleMenu1Click"
+        />
 </RelativeLayout>
