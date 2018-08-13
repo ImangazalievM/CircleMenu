@@ -17,9 +17,11 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
 
     private int distance;
     private int circleStartAngle;
+    private int angleRange;
     private boolean openOnStart;
     private boolean hintsEnabled;
     private int calculatedSize;
+    private int centerButtonGravity;
 
     private CenterMenuButton centerButton;
     private MenuController menuController;
@@ -43,7 +45,9 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
 
         try {
             circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_startAngle, getResources().getInteger(R.integer.circle_menu_start_angle));
+            angleRange = typedArray.getInteger(R.styleable.CircleMenu_angleRange, 360);
             distance = (int) typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
+            centerButtonGravity = typedArray.getInt(R.styleable.CircleMenu_centerButtonGravity, Gravity.CENTER);
             openOnStart = typedArray.getBoolean(R.styleable.CircleMenu_openOnStart, false);
             hintsEnabled = typedArray.getBoolean(R.styleable.CircleMenu_hintsEnabled, false);
         } finally {
@@ -71,7 +75,7 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
             }
         });
         LayoutParams centerButtonParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        centerButtonParams.gravity = Gravity.CENTER;
+        centerButtonParams.gravity = centerButtonGravity;
 
         centerButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -95,7 +99,7 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
         }
 
         menuController = new MenuController(getContext(), buttons, this, centerButton.getX(), centerButton.getY(),
-                circleStartAngle, distance, openOnStart, hintsEnabled);
+                circleStartAngle, angleRange, distance, openOnStart, hintsEnabled);
     }
 
     @Override
@@ -158,10 +162,6 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
         centerButton.setOpened(false);
         centerButton.setClickable(false);
 
-        if (onItemClickListener != null) {
-            onItemClickListener.onItemClick(menuButton);
-        }
-
         if (eventListener != null) {
             eventListener.onButtonClickAnimationStart(menuButton);
         }
@@ -180,12 +180,31 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
         invalidate();
     }
 
+    @Override
+    public void onClick(CircleMenuButton menuButton) {
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClick(menuButton);
+        }
+    }
+
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
     public void setEventListener(EventListener listener) {
         this.eventListener = listener;
+    }
+
+    public void setCircleStartAngle(int circleStartAngle) {
+        this.circleStartAngle = circleStartAngle;
+    }
+
+    public void setAngleRange(int angleRange) {
+        this.angleRange = angleRange;
+    }
+
+    public void setCenterButtonGravity(int centerButtonGravity) {
+        this.centerButtonGravity = centerButtonGravity;
     }
 
     public void toggle() {

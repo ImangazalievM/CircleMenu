@@ -18,6 +18,7 @@ class MenuController {
     private List<CircleMenuButton> buttons;
     private float menuCenterX, menuCenterY;
     private float startAngle;
+    private float angleRange;
     private int distance;
     private boolean isOpened;
 
@@ -27,10 +28,11 @@ class MenuController {
 
     MenuController(Context context,
                    List<CircleMenuButton> menuButtons,
-                   MenuControllerListener listener,
+                   final MenuControllerListener listener,
                    float menuCenterX,
                    float menuCenterY,
                    final float startAngle,
+                   final float angleRange,
                    int distance,
                    boolean openOnStart,
                    final boolean hintsEnabled) {
@@ -38,6 +40,7 @@ class MenuController {
         this.menuCenterX = menuCenterX;
         this.menuCenterY = menuCenterY;
         this.startAngle = startAngle;
+        this.angleRange = angleRange;
         this.distance = distance;
         this.isOpened = openOnStart;
         this.listener = listener;
@@ -47,8 +50,11 @@ class MenuController {
             @Override
             public void onClick(View v) {
                 CircleMenuButton menuButton = (CircleMenuButton) v;
-                float buttonAngle = (360f / buttons.size()) * buttons.indexOf(menuButton) + startAngle;
-                itemSelectionAnimator.startSelectAnimation(menuButton, buttonAngle);
+                if (menuButton.isShowClickAnim()) {
+                    float buttonAngle = (angleRange / buttons.size()) * buttons.indexOf(menuButton) + startAngle;
+                    itemSelectionAnimator.startSelectAnimation(menuButton, buttonAngle);
+                }
+                listener.onClick(menuButton);
             }
         };
         View.OnLongClickListener onButtonItemLongClickListener = new View.OnLongClickListener() {
@@ -93,7 +99,7 @@ class MenuController {
         listener.onOpenAnimationStart();
 
         ValueAnimator buttonAnimator = ValueAnimator.ofFloat(0f, distance);
-        buttonAnimator.setDuration(animate? TOGGLE_ANIMATION_DURATION : 0);
+        buttonAnimator.setDuration(animate ? TOGGLE_ANIMATION_DURATION : 0);
         buttonAnimator.setInterpolator(new DecelerateInterpolator());
         buttonAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -122,7 +128,7 @@ class MenuController {
         listener.onCloseAnimationStart();
 
         ValueAnimator buttonAnimator = ValueAnimator.ofFloat(distance, 0f);
-        buttonAnimator.setDuration(animate? TOGGLE_ANIMATION_DURATION : 0);
+        buttonAnimator.setDuration(animate ? TOGGLE_ANIMATION_DURATION : 0);
         buttonAnimator.setInterpolator(new DecelerateInterpolator());
         buttonAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -143,7 +149,7 @@ class MenuController {
 
     private void layoutButtons(float distance) {
         int buttonsCount = buttons.size();
-        float angleStep = 360.0f / buttonsCount;
+        float angleStep = angleRange / buttonsCount;
         float lastAngle = startAngle;
 
         for (int i = 0; i < buttonsCount; i++) {
@@ -155,8 +161,8 @@ class MenuController {
             button.setX(x);
             button.setY(y);
 
-            if (lastAngle > 360) {
-                lastAngle -= 360;
+            if (lastAngle > startAngle + angleRange) {
+                lastAngle -= angleRange;
             }
 
             lastAngle += angleStep;
