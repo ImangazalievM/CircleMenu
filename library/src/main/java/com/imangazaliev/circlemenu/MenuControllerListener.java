@@ -15,4 +15,6 @@ interface MenuControllerListener {
     void onSelectAnimationEnd(CircleMenuButton menuButton);
 
     void redrawView();
+
+    void onClick(CircleMenuButton menuButton);
 }

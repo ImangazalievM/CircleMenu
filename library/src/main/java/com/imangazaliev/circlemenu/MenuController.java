@@ -28,7 +28,7 @@ class MenuController {
 
     MenuController(Context context,
                    List<CircleMenuButton> menuButtons,
-                   MenuControllerListener listener,
+                   final MenuControllerListener listener,
                    float menuCenterX,
                    float menuCenterY,
                    final float startAngle,
@@ -54,6 +54,7 @@ class MenuController {
                     float buttonAngle = (angleRange / buttons.size()) * buttons.indexOf(menuButton) + startAngle;
                     itemSelectionAnimator.startSelectAnimation(menuButton, buttonAngle);
                 }
+                listener.onClick(menuButton);
             }
         };
         View.OnLongClickListener onButtonItemLongClickListener = new View.OnLongClickListener() {

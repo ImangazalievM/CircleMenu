@@ -162,10 +162,6 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
         centerButton.setOpened(false);
         centerButton.setClickable(false);
 
-        if (onItemClickListener != null) {
-            onItemClickListener.onItemClick(menuButton);
-        }
-
         if (eventListener != null) {
             eventListener.onButtonClickAnimationStart(menuButton);
         }
@@ -182,6 +178,13 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
     @Override
     public void redrawView() {
         invalidate();
+    }
+
+    @Override
+    public void onClick(CircleMenuButton menuButton) {
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClick(menuButton);
+        }
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
