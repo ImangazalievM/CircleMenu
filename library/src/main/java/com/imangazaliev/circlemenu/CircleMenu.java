@@ -3,6 +3,7 @@ package com.imangazaliev.circlemenu;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -80,7 +81,11 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
         centerButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                centerButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    centerButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    centerButton.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
 
                 initMenuController();
             }
