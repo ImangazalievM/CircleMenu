@@ -43,7 +43,9 @@ public class CenterMenuButton extends CircleButton {
         int iconId = isOpened ? R.drawable.ic_menu_animated : R.drawable.ic_close_animated;
         AnimatedVectorDrawable menuIcon = (AnimatedVectorDrawable) ContextCompat.getDrawable(getContext(), iconId);
         setImageDrawable(menuIcon);
-        menuIcon.start();
+        if (menuIcon != null) {
+            menuIcon.start();
+        }
     }
 
     private void startPreLollipopAnimation() {

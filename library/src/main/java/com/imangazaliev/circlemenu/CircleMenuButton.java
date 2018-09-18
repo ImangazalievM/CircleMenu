@@ -34,10 +34,10 @@ public class CircleMenuButton extends CircleButton {
 
         setBackgroundCompat(createBackgroundDrawable(colorNormal, colorPressed));
 
-        if (iconId != 0) {
-            setImageResource(iconId);
-        } else {
+        if (iconId == 0) {
             setImageDrawable(new ColorDrawable(Color.TRANSPARENT));
+        } else {
+            setImageResource(iconId);
         }
     }
 

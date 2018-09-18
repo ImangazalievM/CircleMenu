@@ -181,12 +181,10 @@ class ItemSelectionAnimator {
     }
 
     void onDraw(Canvas canvas) {
-        if (!isAnimating) {
-            return;
+        if (isAnimating) {
+            drawCircle(canvas);
+            drawIcon(canvas);
         }
-
-        drawCircle(canvas);
-        drawIcon(canvas);
     }
 
     private void drawCircle(Canvas canvas) {

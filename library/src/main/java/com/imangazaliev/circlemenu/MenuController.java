@@ -119,32 +119,30 @@ class MenuController {
     }
 
     void close(boolean animate) {
-        if (!isOpened) {
-            return;
+        if (isOpened) {
+            enableButtons(false);
+            layoutButtons(distance);
+            listener.onCloseAnimationStart();
+
+            ValueAnimator buttonAnimator = ValueAnimator.ofFloat(distance, 0f);
+            buttonAnimator.setDuration(animate ? TOGGLE_ANIMATION_DURATION : 0);
+            buttonAnimator.setInterpolator(new DecelerateInterpolator());
+            buttonAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    layoutButtons((float) animation.getAnimatedValue());
+                }
+            });
+            buttonAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    isOpened = false;
+                    showButtons(false);
+                    listener.onCloseAnimationEnd();
+                }
+            });
+            buttonAnimator.start();
         }
-
-        enableButtons(false);
-        layoutButtons(distance);
-        listener.onCloseAnimationStart();
-
-        ValueAnimator buttonAnimator = ValueAnimator.ofFloat(distance, 0f);
-        buttonAnimator.setDuration(animate ? TOGGLE_ANIMATION_DURATION : 0);
-        buttonAnimator.setInterpolator(new DecelerateInterpolator());
-        buttonAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                layoutButtons((float) animation.getAnimatedValue());
-            }
-        });
-        buttonAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                isOpened = false;
-                showButtons(false);
-                listener.onCloseAnimationEnd();
-            }
-        });
-        buttonAnimator.start();
     }
 
     private void layoutButtons(float distance) {
