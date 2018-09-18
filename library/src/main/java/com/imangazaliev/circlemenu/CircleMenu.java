@@ -44,7 +44,7 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
     private void init(AttributeSet attrs) {
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.CircleMenu);
 
-        circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_startAngle, getResources().getInteger(R.integer.circle_menu_start_angle));
+        circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_startAngle, 270);
         angleRange = typedArray.getInteger(R.styleable.CircleMenu_angleRange, 360);
         distance = (int) typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
         centerButtonGravity = typedArray.getInt(R.styleable.CircleMenu_centerButtonGravity, Gravity.CENTER);
