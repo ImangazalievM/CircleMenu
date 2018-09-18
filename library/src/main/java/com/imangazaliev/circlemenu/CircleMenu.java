@@ -44,16 +44,13 @@ public class CircleMenu extends FrameLayout implements MenuControllerListener {
     private void init(AttributeSet attrs) {
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.CircleMenu);
 
-        try {
-            circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_startAngle, getResources().getInteger(R.integer.circle_menu_start_angle));
-            angleRange = typedArray.getInteger(R.styleable.CircleMenu_angleRange, 360);
-            distance = (int) typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
-            centerButtonGravity = typedArray.getInt(R.styleable.CircleMenu_centerButtonGravity, Gravity.CENTER);
-            openOnStart = typedArray.getBoolean(R.styleable.CircleMenu_openOnStart, false);
-            hintsEnabled = typedArray.getBoolean(R.styleable.CircleMenu_hintsEnabled, false);
-        } finally {
-            typedArray.recycle();
-        }
+        circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_startAngle, getResources().getInteger(R.integer.circle_menu_start_angle));
+        angleRange = typedArray.getInteger(R.styleable.CircleMenu_angleRange, 360);
+        distance = (int) typedArray.getDimension(R.styleable.CircleMenu_distance, getResources().getDimension(R.dimen.circle_menu_distance));
+        centerButtonGravity = typedArray.getInt(R.styleable.CircleMenu_centerButtonGravity, Gravity.CENTER);
+        openOnStart = typedArray.getBoolean(R.styleable.CircleMenu_openOnStart, false);
+        hintsEnabled = typedArray.getBoolean(R.styleable.CircleMenu_hintsEnabled, false);
+        typedArray.recycle();
 
         float buttonSize = getResources().getDimension(R.dimen.circle_menu_button_size);
         int ringRadius = (int) (buttonSize + (distance - buttonSize / 2));
