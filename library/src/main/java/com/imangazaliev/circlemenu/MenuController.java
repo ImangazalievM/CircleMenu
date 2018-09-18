@@ -68,9 +68,9 @@ class MenuController {
             }
         };
 
-        for (CircleMenuButton menuButton : buttons) {
-            menuButton.setOnClickListener(onButtonItemClickListener);
-            menuButton.setOnLongClickListener(onButtonItemLongClickListener);
+        for(int i = 0; i < buttons.size(); i++) {
+            buttons.get(i).setOnClickListener(onButtonItemClickListener);
+            buttons.get(i).setOnLongClickListener(onButtonItemLongClickListener);
         }
 
         layoutButtons(openOnStart ? distance : 0);
@@ -179,14 +179,14 @@ class MenuController {
     }
 
     void enableButtons(boolean enabled) {
-        for (CircleMenuButton button : buttons) {
-            button.setEnabled(enabled);
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons.get(i).setEnabled(enabled);
         }
     }
 
     void showButtons(boolean visible) {
-        for (CircleMenuButton button : buttons) {
-            button.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons.get(i).setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
         }
     }
 
