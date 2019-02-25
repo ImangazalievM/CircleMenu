@@ -1,16 +1,16 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
-final LIBRARY_VERSION_NAME = '2.0.2'
-final LIBRARY_VERSION_CODE = 8
+final LIBRARY_VERSION_NAME = '2.0.3'
+final LIBRARY_VERSION_CODE = 9
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode LIBRARY_VERSION_CODE
         versionName LIBRARY_VERSION_NAME
 
@@ -34,7 +34,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
 }
 
 // это блок будет обработан плагином bintray-release
