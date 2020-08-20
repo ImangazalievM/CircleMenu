@@ -2,7 +2,6 @@ package com.imangazaliev.circlemenu.sample
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.snackbar.Snackbar
