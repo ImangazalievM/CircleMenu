@@ -4,14 +4,11 @@
         <attr name="startAngle" format="integer"/>
         <attr name="distance" format="integer"/>
         <attr name="openOnStart" format="boolean"/>
-        <attr name="hintsEnabled" format="boolean"/>
-    </declare-styleable>
-
-    <declare-styleable name="CircleMenuButton">
-        <attr name="colorNormal" format="color"/>
-        <attr name="colorPressed" format="color"/>
-        <attr name="icon" format="reference"/>
-        <attr name="hintText" format="string"/>
+        <attr name="buttonIcons" format="reference"/>
+        <attr name="buttonColors" format="reference"/>
+        <attr name="menuButtonColor" format="reference|color"/>
+        <attr name="menuIconColor" format="reference|color"/>
+        <attr name="iconsColor" format="reference|color"/>
     </declare-styleable>
 
 

@@ -16,25 +16,49 @@ import kotlin.math.sin
 internal class MenuController(
         context: Context?,
         private val buttons: List<CircleMenuButton>,
-        private val listener: MenuControllerListener,
+        private val listener: Listener,
         private var menuCenterX: Float,
         private var menuCenterY: Float,
         private val startAngle: Float,
         private val distance: Int,
-        var isOpened: Boolean,
-        hintsEnabled: Boolean
+        var isOpened: Boolean
 ) {
+
+    companion object {
+        private const val TOGGLE_ANIMATION_DURATION = 200
+    }
+
     private val itemSelectionAnimator: ItemSelectionAnimator = ItemSelectionAnimator(
-           context =  context!!,
-           menuController = this,
-           controllerListener = listener,
-           menuCenterX = menuCenterX,
-           menuCenterY = menuCenterY,
-           circleRadius = distance
+            context = context!!,
+            menuController = this,
+            controllerListener = listener,
+            menuCenterX = menuCenterX,
+            menuCenterY = menuCenterY,
+            circleRadius = distance
     )
 
-    fun onDraw(canvas: Canvas?) {
-        itemSelectionAnimator.onDraw(canvas!!)
+    init {
+        val onButtonItemClickListener = View.OnClickListener { v ->
+            val menuButton = v as CircleMenuButton
+            val buttonAngle = 360f / buttons.size * buttons.indexOf(menuButton) + startAngle
+            itemSelectionAnimator.startSelectAnimation(menuButton, buttonAngle)
+            listener.onButtonClick(menuButton, buttons.indexOf(menuButton))
+        }
+        val onButtonItemLongClickListener = OnLongClickListener { v ->
+            val menuButton = v as CircleMenuButton
+            listener.onButtonLongClick(menuButton, buttons.indexOf(menuButton))
+            true
+        }
+        for (menuButton in buttons) {
+            menuButton.setOnClickListener(onButtonItemClickListener)
+            menuButton.setOnLongClickListener(onButtonItemLongClickListener)
+        }
+        showButtons(isOpened)
+        layoutButtons(if (isOpened) distance.toFloat() else 0.toFloat())
+    }
+
+    fun onDraw(canvas: Canvas) {
+        itemSelectionAnimator.onDraw(canvas)
     }
 
     fun toggle() {
@@ -123,28 +147,26 @@ internal class MenuController(
         layoutButtons(if (isOpened) distance.toFloat() else 0.toFloat())
     }
 
-    companion object {
-        private const val TOGGLE_ANIMATION_DURATION = 200
-    }
+    interface Listener {
 
-    init {
-        val onButtonItemClickListener = View.OnClickListener { v ->
-            val menuButton = v as CircleMenuButton
-            val buttonAngle = 360f / buttons.size * buttons.indexOf(menuButton) + startAngle
-            itemSelectionAnimator.startSelectAnimation(menuButton, buttonAngle)
-        }
-        val onButtonItemLongClickListener = OnLongClickListener { v ->
-            val menuButton = v as CircleMenuButton
-            if (hintsEnabled) {
-                Toast.makeText(menuButton.context, menuButton.hintText, Toast.LENGTH_SHORT).show()
-            }
-            hintsEnabled
-        }
-        for (menuButton in buttons) {
-            menuButton.setOnClickListener(onButtonItemClickListener)
-            menuButton.setOnLongClickListener(onButtonItemLongClickListener)
-        }
-        layoutButtons(if (isOpened) distance.toFloat() else 0.toFloat())
+        fun onButtonClick(menuButton: CircleMenuButton, index: Int)
+
+        fun onButtonLongClick(menuButton: CircleMenuButton, index: Int)
+
+        fun onOpenAnimationStart()
+
+        fun onOpenAnimationEnd()
+
+        fun onCloseAnimationStart()
+
+        fun onCloseAnimationEnd()
+
+        fun onSelectAnimationStart(menuButton: CircleMenuButton)
+
+        fun onSelectAnimationEnd(menuButton: CircleMenuButton)
+
+        fun redrawView()
+
     }
 
 }

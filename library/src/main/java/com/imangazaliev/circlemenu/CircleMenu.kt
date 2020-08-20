@@ -8,29 +8,47 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.FrameLayout
-import java.util.*
+import androidx.core.content.ContextCompat
 
-class CircleMenu : FrameLayout, MenuControllerListener {
+
+class CircleMenu @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyle: Int = 0
+) : FrameLayout(context, attrs, defStyle), MenuController.Listener {
 
     val isOpened: Boolean
         get() = menuController!!.isOpened
 
+    private var menuButtonColor = 0
+    private var menuIconColor = 0
+    private var buttonIconsColor = 0
     private var distance = 0
     private var circleStartAngle = 0
     private var openOnStart = false
-    private var hintsEnabled = false
     private var calculatedSize = 0
     private lateinit var centerButton: CenterMenuButton
+
     private var menuController: MenuController? = null
     private val eventListener: EventsListener = EventsListener()
+    internal var onItemClickListener: ((buttonIndex: Int) -> Unit)? = null
+    internal var onItemLongClickListener: ((buttonIndex: Int) -> Unit)? = null
 
-    private var onItemClickListener: ((menuButton: CircleMenuButton?) -> Unit)? = null
+    private lateinit var icons: List<Int>
+    private lateinit var colors: List<Int>
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {
-        init(attrs)
+    constructor(
+            context: Context,
+            icons: List<Int>,
+            colors: List<Int>
+    ) : this(context, null, 0) {
+        this.icons = icons
+        this.colors = colors
+
+        init(null)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context!!, attrs, defStyle) {
+    init {
         init(attrs)
     }
 
@@ -40,7 +58,29 @@ class CircleMenu : FrameLayout, MenuControllerListener {
             circleStartAngle = typedArray.getInteger(R.styleable.CircleMenu_startAngle, resources.getInteger(R.integer.circle_menu_start_angle))
             distance = typedArray.getDimension(R.styleable.CircleMenu_distance, resources.getDimension(R.dimen.circle_menu_distance)).toInt()
             openOnStart = typedArray.getBoolean(R.styleable.CircleMenu_openOnStart, false)
-            hintsEnabled = typedArray.getBoolean(R.styleable.CircleMenu_hintsEnabled, false)
+
+            val menuButtonColorDef = ContextCompat.getColor(context, R.color.circle_menu_center_button_color)
+            menuButtonColor = typedArray.getColor(R.styleable.CircleMenu_menuButtonColor, menuButtonColorDef)
+            val menuIconColorDef = ContextCompat.getColor(context, R.color.circle_menu_center_button_icon_color)
+            menuIconColor = typedArray.getColor(R.styleable.CircleMenu_menuIconColor, menuIconColorDef)
+            val iconsColorDef = ContextCompat.getColor(context, R.color.circle_menu_button_icon_color)
+            buttonIconsColor = typedArray.getColor(R.styleable.CircleMenu_iconsColor, iconsColorDef)
+
+            val iconArrayId: Int = typedArray.getResourceId(R.styleable.CircleMenu_buttonIcons, 0)
+            val colorArrayId: Int = typedArray.getResourceId(R.styleable.CircleMenu_buttonColors, 0)
+
+            colors = resources.getIntArray(colorArrayId).asList()
+            icons = resources.obtainTypedArray(iconArrayId).let { iconsIds ->
+                (0 until iconsIds.length()).map { iconsIds.getResourceId(it, -1) }
+            }
+
+            if (colors.size != colors.size) {
+                throw IllegalArgumentException("Colors array size must be equal to the icons array")
+            }
+
+            if (colors.size != colors.size) {
+                throw IllegalArgumentException("Colors and icons array must not be empty")
+            }
         } finally {
             typedArray.recycle()
         }
@@ -51,14 +91,14 @@ class CircleMenu : FrameLayout, MenuControllerListener {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+
         createCenterButton()
     }
 
     private fun createCenterButton() {
-        centerButton = CenterMenuButton(context, openOnStart)
+        centerButton = CenterMenuButton(context, menuIconColor, openOnStart)
+        centerButton.setColor(menuButtonColor)
         centerButton.setOnClickListener { toggle() }
-        val centerButtonParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-        centerButtonParams.gravity = Gravity.CENTER
         centerButton.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -67,19 +107,42 @@ class CircleMenu : FrameLayout, MenuControllerListener {
                 initMenuController()
             }
         })
+        val centerButtonParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        centerButtonParams.gravity = Gravity.CENTER
         addView(centerButton, centerButtonParams)
     }
 
     private fun initMenuController() {
-        val buttons: MutableList<CircleMenuButton> = ArrayList()
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            if (child !== centerButton) {
-                buttons.add(child as CircleMenuButton)
-            }
+        val buttons = colors.mapIndexed { index, color ->
+            val button = CircleMenuButton(context)
+            button.setIconColor(buttonIconsColor)
+            button.setIcon(icons[index])
+            button.setColor(color)
+            val params = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            button.layoutParams = params
+            addView(button)
+            button
         }
-        menuController = MenuController(context, buttons, this, centerButton.x, centerButton.y,
-                circleStartAngle.toFloat(), distance, openOnStart, hintsEnabled)
+
+
+        menuController = MenuController(
+                context = context,
+                buttons = buttons,
+                listener = this,
+                menuCenterX = centerButton.x,
+                menuCenterY = centerButton.y,
+                startAngle = circleStartAngle.toFloat(),
+                distance = distance,
+                isOpened = openOnStart
+        )
+    }
+
+    override fun onButtonClick(menuButton: CircleMenuButton, index: Int) {
+        this.onItemClickListener?.invoke(index)
+    }
+
+    override fun onButtonLongClick(menuButton: CircleMenuButton, index: Int) {
+        this.onItemLongClickListener?.invoke(index)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -119,7 +182,6 @@ class CircleMenu : FrameLayout, MenuControllerListener {
     override fun onSelectAnimationStart(menuButton: CircleMenuButton) {
         centerButton.setOpened(false)
         centerButton.isClickable = false
-        onItemClickListener?.invoke(menuButton)
         eventListener.onButtonClickAnimationStart?.invoke(menuButton)
     }
 
@@ -132,8 +194,12 @@ class CircleMenu : FrameLayout, MenuControllerListener {
         invalidate()
     }
 
-    fun setOnItemClickListener(listener: (menuButton: CircleMenuButton?) -> Unit) {
+    fun setOnItemClickListener(listener: (buttonIndex: Int) -> Unit) {
         this.onItemClickListener = listener
+    }
+
+    fun setOnItemLongClickListener(listener: (buttonIndex: Int) -> Unit) {
+        this.onItemLongClickListener = listener
     }
 
     fun toggle() {
@@ -148,25 +214,26 @@ class CircleMenu : FrameLayout, MenuControllerListener {
         menuController!!.close(animate)
     }
 
-    fun relayotMenuItems() {
-        menuController!!.setCenterButtonPosition(centerButton.x, centerButton.y)
-    }
-
     fun onMenuOpenAnimationStart(listener: () -> Unit) {
         eventListener.onMenuOpenAnimationStart = listener
     }
+
     fun onMenuOpenAnimationEnd(listener: () -> Unit) {
         eventListener.onMenuOpenAnimationEnd = listener
     }
+
     fun onMenuCloseAnimationStart(listener: () -> Unit) {
         eventListener.onMenuCloseAnimationStart = listener
     }
+
     fun onMenuCloseAnimationEnd(listener: () -> Unit) {
         eventListener.onMenuCloseAnimationEnd = listener
     }
+
     fun onButtonClickAnimationStart(listener: (menuButton: CircleMenuButton) -> Unit) {
         eventListener.onButtonClickAnimationStart = listener
     }
+
     fun onButtonClickAnimationEnd(listener: (menuButton: CircleMenuButton) -> Unit) {
         eventListener.onButtonClickAnimationEnd = listener
     }

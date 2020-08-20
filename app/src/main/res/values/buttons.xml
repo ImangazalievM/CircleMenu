@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="icons">
+        <item>@drawable/ic_favorite</item>
+        <item>@drawable/ic_search</item>
+        <item>@drawable/ic_alert</item>
+        <item>@drawable/ic_place</item>
+        <item>@drawable/ic_edit</item>
+    </array>
+
+    <array name="colors">
+        <item>#2196F3</item>
+        <item>#4CAF50</item>
+        <item>#F44336</item>
+        <item>#9C27B0</item>
+        <item>#FF9800</item>
+    </array>
+
+</resources>

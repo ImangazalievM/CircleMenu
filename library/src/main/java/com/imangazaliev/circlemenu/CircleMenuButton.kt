@@ -1,30 +1,40 @@
 package com.imangazaliev.circlemenu
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 class CircleMenuButton @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null
-) : CircleButton(context, attrs) {
+) : FloatingActionButton(context, attrs) {
 
-    val colorNormal: Int
-    val hintText: String?
+    internal var iconResId: Int = -1
+    private var iconColor: Int = Color.WHITE
 
     init {
-        val attr = context.obtainStyledAttributes(attrs, R.styleable.CircleMenuButton, 0, 0)
-        colorNormal = attr.getColor(R.styleable.CircleMenuButton_colorNormal, resources.getColor(R.color.circle_menu_button_color_normal))
-        val colorPressed = attr.getColor(R.styleable.CircleMenuButton_colorPressed, resources.getColor(R.color.circle_menu_button_color_pressed))
-        hintText = attr.getString(R.styleable.CircleMenuButton_hintText)
-        val iconId = attr.getResourceId(R.styleable.CircleMenuButton_icon, 0)
-        attr.recycle()
-        setBackgroundCompat(createBackgroundDrawable(colorNormal, colorPressed))
-        if (iconId != 0) {
-            setImageResource(iconId)
-        } else {
-            setImageDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
+        isClickable = true
     }
+
+    internal fun setIcon(@DrawableRes iconResId: Int) {
+        this.iconResId = iconResId
+
+        val icon = ContextCompat.getDrawable(context, iconResId)!!
+        icon.setTintCompat(iconColor)
+        setImageDrawable(icon)
+    }
+
+    fun setIconColor(buttonIconsColor: Int) {
+        this.iconColor = buttonIconsColor
+    }
+
+    internal fun setColor(color: Int) {
+        backgroundTintList = ColorStateList.valueOf(color)
+    }
+
 }

@@ -10,19 +10,21 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.os.Build
 import android.view.animation.DecelerateInterpolator
+import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
 internal class ItemSelectionAnimator(
-        context: Context,
+        private val context: Context,
         private val menuController: MenuController,
-        private val controllerListener: MenuControllerListener,
+        private val controllerListener: MenuController.Listener,
         menuCenterX: Float,
         menuCenterY: Float,
         circleRadius: Int
 ) {
+
     private var circleColor = 0
     private var circleAlpha: Int
     private var startAngle = 0f
@@ -34,7 +36,6 @@ internal class ItemSelectionAnimator(
     private val menuCenterX: Float
     private val menuCenterY: Float
     private val circleRect = RectF()
-    private var currentMenuButton: CircleMenuButton? = null
     private var currentIconBitmap: Bitmap? = null
     private var iconSourceRect: Rect? = null
     private val iconRect = RectF()
@@ -45,14 +46,13 @@ internal class ItemSelectionAnimator(
             return
         }
         menuController.enableButtons(false)
-        currentMenuButton = menuButton
-        circleColor = menuButton.colorNormal
+        circleColor = menuButton.backgroundTintList!!.defaultColor
         currentCircleStrokeWidth = originalCircleStrokeWidth
         startAngle = buttonAngle
-        val iconDrawable = menuButton.drawable
+        val iconDrawable = ContextCompat.getDrawable(context, menuButton.iconResId)!!
         currentIconBitmap = getIconBitmap(iconDrawable)
         iconSourceRect = iconDrawable.bounds
-        startCircleDrawingAnimation()
+        startCircleDrawingAnimation(menuButton)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -76,9 +76,9 @@ internal class ItemSelectionAnimator(
         return bitmap
     }
 
-    private fun startCircleDrawingAnimation() {
+    private fun startCircleDrawingAnimation(menuButton: CircleMenuButton) {
         isAnimating = true
-        controllerListener.onSelectAnimationStart(currentMenuButton)
+        controllerListener.onSelectAnimationStart(menuButton)
         val circleAngleAnimation = ValueAnimator.ofFloat(START_CIRCLE_ANGLE.toFloat(), END_CIRCLE_ANGLE.toFloat())
         circleAngleAnimation.duration = SELECT_ANIMATION_DURATION.toLong()
         circleAngleAnimation.interpolator = DecelerateInterpolator()
@@ -87,13 +87,13 @@ internal class ItemSelectionAnimator(
             controllerListener.redrawView()
             if (currentCircleAngle == END_CIRCLE_ANGLE.toFloat()) {
                 menuController.showButtons(false)
-                startExitAnimation()
+                startExitAnimation(menuButton)
             }
         }
         circleAngleAnimation.start()
     }
 
-    private fun startExitAnimation() {
+    private fun startExitAnimation(menuButton: CircleMenuButton) {
         val circleSizeAnimation = ValueAnimator.ofFloat(START_CIRCLE_SIZE_RATIO, END_CIRCLE_SIZE_RATIO)
         circleSizeAnimation.duration = EXIT_ANIMATION_DURATION.toLong()
         circleSizeAnimation.interpolator = DecelerateInterpolator()
@@ -107,9 +107,8 @@ internal class ItemSelectionAnimator(
                 currentCircleRadius = originalCircleRadius
                 currentCircleStrokeWidth = originalCircleStrokeWidth
                 controllerListener.redrawView()
-                controllerListener.onSelectAnimationEnd(currentMenuButton)
+                controllerListener.onSelectAnimationEnd(menuButton)
                 menuController.isOpened = false
-                currentMenuButton = null
                 isAnimating = false
             }
         }

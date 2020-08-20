@@ -14,15 +14,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        btnAddPadding.setOnClickListener {
-            xxx.visibility = View.GONE
-        }
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-
-        circleMenu.setOnItemClickListener { menuButton ->
-            Snackbar.make(snackbarContainer, menuButton!!.hintText!!, Snackbar.LENGTH_LONG).show()
+        val titles = arrayListOf("Favorite", "Search", "Alert", "Place", "Edit")
+        circleMenu.setOnItemClickListener { buttonIndex ->
+            Snackbar.make(snackbarContainer, titles[buttonIndex], Snackbar.LENGTH_LONG).show()
         }
+
         circleMenu.onMenuOpenAnimationStart {
             Log.d("CircleMenuStatus", "onMenuOpenAnimationStart")
         }

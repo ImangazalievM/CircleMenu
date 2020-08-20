@@ -5,19 +5,34 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.animation.OvershootInterpolator
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class CenterMenuButton(context: Context?, private var isOpened: Boolean) : CircleButton(context) {
+internal class CenterMenuButton(
+        context: Context,
+        private val iconColor: Int,
+        private var isOpened: Boolean
+) : FloatingActionButton(context) {
 
     private var preLollipopAnimationSet: AnimatorSet? = null
 
+    init {
+        setImageDrawable(getIconDrawable(!isOpened))
+    }
+
+    internal fun setColor(color: Int) {
+        backgroundTintList = ColorStateList.valueOf(color)
+    }
+
     fun setOpened(isOpened: Boolean) {
         this.isOpened = isOpened
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (isLollipop()) {
             startVectorAnimation(isOpened)
         } else {
             startPreLollipopAnimation()
@@ -26,10 +41,9 @@ class CenterMenuButton(context: Context?, private var isOpened: Boolean) : Circl
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private fun startVectorAnimation(isOpened: Boolean) {
-        val iconId = if (isOpened) R.drawable.ic_menu_animated else R.drawable.ic_close_animated
-        val menuIcon = ContextCompat.getDrawable(context, iconId) as AnimatedVectorDrawable?
+        val menuIcon = getIconDrawable(isOpened) as AnimatedVectorDrawable
         setImageDrawable(menuIcon)
-        menuIcon!!.start()
+        menuIcon.start()
     }
 
     private fun startPreLollipopAnimation() {
@@ -51,7 +65,8 @@ class CenterMenuButton(context: Context?, private var isOpened: Boolean) : Circl
         scaleInY.duration = 150
         scaleInX.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animation: Animator) {
-                setImageResource(if (isOpened) R.drawable.ic_close_vector else R.drawable.ic_menu_vector)
+                val icon = getIconDrawable(isOpened)
+                setImageDrawable(icon)
             }
         })
         preLollipopAnimationSet.play(scaleOutX).with(scaleOutY)
@@ -60,13 +75,17 @@ class CenterMenuButton(context: Context?, private var isOpened: Boolean) : Circl
         return preLollipopAnimationSet
     }
 
-    init {
-        val colorNormal = resources.getColor(R.color.circle_menu_center_button_color_normal)
-        val colorPressed = resources.getColor(R.color.circle_menu_center_button_color_pressed)
-        setBackgroundCompat(createBackgroundDrawable(colorNormal, colorPressed))
-        setImageResource(if (isOpened) R.drawable.ic_close_vector else R.drawable.ic_menu_vector)
+    private fun getIconDrawable(isOpened: Boolean): Drawable {
+        val iconResId = if (isLollipop()) {
+            if (isOpened) R.drawable.ic_menu_animated else R.drawable.ic_close_animated
+        } else {
+            if (isOpened) R.drawable.ic_close_vector else R.drawable.ic_menu_vector
+        }
 
-        //setVisibility(View.INVISIBLE);
+        val icon = ContextCompat.getDrawable(context, iconResId)!!
+        icon.setTintCompat(iconColor)
+        return icon
     }
+
 
 }
