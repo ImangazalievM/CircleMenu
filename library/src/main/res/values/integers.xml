@@ -1,3 +1,11 @@
 <resources>
     <integer name="circle_menu_start_angle">270</integer>
+    <integer name="circle_menu_max_angle">360</integer>
+
+    <integer name="menu_icon_animation_duration">450</integer>
+    <integer name="viewport_width">24</integer>
+    <integer name="viewport_height">24</integer>
+    <integer name="viewport_center_x">12</integer>
+    <integer name="viewport_center_y">12</integer>
+    <integer name="stroke_width">2</integer>
 </resources>

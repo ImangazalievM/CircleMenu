@@ -8,7 +8,6 @@ import android.graphics.Canvas
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.animation.DecelerateInterpolator
-import android.widget.Toast
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
@@ -17,10 +16,10 @@ internal class MenuController(
         context: Context?,
         private val buttons: List<CircleMenuButton>,
         private val listener: Listener,
-        private var menuCenterX: Float,
-        private var menuCenterY: Float,
         private val startAngle: Float,
+        private val maxAngle: Float,
         private val distance: Int,
+        private val showSelectAnimation: Boolean,
         var isOpened: Boolean
 ) {
 
@@ -28,20 +27,25 @@ internal class MenuController(
         private const val TOGGLE_ANIMATION_DURATION = 200
     }
 
+    private var menuCenterX: Float = 0f
+    private var menuCenterY: Float = 0f
     private val itemSelectionAnimator: ItemSelectionAnimator = ItemSelectionAnimator(
             context = context!!,
             menuController = this,
             controllerListener = listener,
-            menuCenterX = menuCenterX,
-            menuCenterY = menuCenterY,
             circleRadius = distance
     )
 
     init {
         val onButtonItemClickListener = View.OnClickListener { v ->
             val menuButton = v as CircleMenuButton
-            val buttonAngle = 360f / buttons.size * buttons.indexOf(menuButton) + startAngle
-            itemSelectionAnimator.startSelectAnimation(menuButton, buttonAngle)
+            if (showSelectAnimation) {
+                val buttonAngle = maxAngle / buttons.size * buttons.indexOf(menuButton) + startAngle
+                val buttonIndex = buttons.indexOf(menuButton)
+                itemSelectionAnimator.startSelectAnimation(menuButton, buttonIndex, buttonAngle)
+            } else {
+                close(true)
+            }
             listener.onButtonClick(menuButton, buttons.indexOf(menuButton))
         }
         val onButtonItemLongClickListener = OnLongClickListener { v ->
@@ -114,7 +118,7 @@ internal class MenuController(
 
     private fun layoutButtons(distance: Float) {
         val buttonsCount = buttons.size
-        val angleStep = 360.0f / buttonsCount
+        val angleStep = maxAngle / buttonsCount
         var lastAngle = startAngle
         for (i in 0 until buttonsCount) {
             val button = buttons[i]
@@ -122,8 +126,8 @@ internal class MenuController(
             val y = (menuCenterY + distance * sin(Math.toRadians(lastAngle.toDouble()))).toFloat().roundToInt().toFloat()
             button.x = x
             button.y = y
-            if (lastAngle > 360) {
-                lastAngle -= 360f
+            if (lastAngle > maxAngle) {
+                lastAngle -= maxAngle
             }
             lastAngle += angleStep
         }
@@ -141,13 +145,14 @@ internal class MenuController(
         }
     }
 
-    fun setCenterButtonPosition(menuCenterX: Float, menuCenterY: Float) {
-        this.menuCenterX = menuCenterX
-        this.menuCenterY = menuCenterY
+    fun setCenterButtonPosition(centerButtonX: Float, centerButtonY: Float) {
+        this.menuCenterX = centerButtonX
+        this.menuCenterY = centerButtonY
+        itemSelectionAnimator.setCenterButtonPosition(menuCenterX, menuCenterY)
         layoutButtons(if (isOpened) distance.toFloat() else 0.toFloat())
     }
 
-    interface Listener {
+    internal interface Listener {
 
         fun onButtonClick(menuButton: CircleMenuButton, index: Int)
 
@@ -161,9 +166,9 @@ internal class MenuController(
 
         fun onCloseAnimationEnd()
 
-        fun onSelectAnimationStart(menuButton: CircleMenuButton)
+        fun onSelectAnimationStart(buttonIndex: Int)
 
-        fun onSelectAnimationEnd(menuButton: CircleMenuButton)
+        fun onSelectAnimationEnd(buttonIndex: Int)
 
         fun redrawView()
 

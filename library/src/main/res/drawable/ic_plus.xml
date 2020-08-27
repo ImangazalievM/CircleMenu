@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportHeight="@integer/viewport_height"
+    android:viewportWidth="@integer/viewport_width">
+
+    <group
+        android:name="@string/groupPlusCross"
+        android:pivotX="@integer/viewport_center_x"
+        android:pivotY="@integer/viewport_center_y">
+
+        <path
+            android:name="@string/plus"
+            android:pathData="@string/path_plus"
+            android:strokeWidth="@integer/stroke_width"
+            android:strokeLineCap="square"
+            android:strokeColor="#ffffff"/>
+
+    </group>
+
+</vector>

@@ -20,8 +20,6 @@ internal class ItemSelectionAnimator(
         private val context: Context,
         private val menuController: MenuController,
         private val controllerListener: MenuController.Listener,
-        menuCenterX: Float,
-        menuCenterY: Float,
         circleRadius: Int
 ) {
 
@@ -33,18 +31,36 @@ internal class ItemSelectionAnimator(
     private var currentCircleStrokeWidth = 0f
     private val originalCircleRadius: Float
     private var currentCircleRadius: Float
-    private val menuCenterX: Float
-    private val menuCenterY: Float
+    private var circleCenterX: Float = 0f
+    private var circleCenterY: Float = 0f
     private val circleRect = RectF()
     private var currentIconBitmap: Bitmap? = null
     private var iconSourceRect: Rect? = null
     private val iconRect = RectF()
     private var isAnimating = false
 
-    fun startSelectAnimation(menuButton: CircleMenuButton, buttonAngle: Float) {
+    init {
+        currentCircleAngle = START_CIRCLE_ANGLE.toFloat()
+        circleAlpha = ALPHA_OPAQUE
+        originalCircleRadius = circleRadius.toFloat()
+        currentCircleRadius = originalCircleRadius
+        originalCircleStrokeWidth = context.resources.getDimension(R.dimen.circle_menu_button_size)
+    }
+
+    fun setCenterButtonPosition(centerButtonX: Float, centerButtonY: Float) {
+        this.circleCenterX = centerButtonX + originalCircleStrokeWidth / 2
+        this.circleCenterY = centerButtonY + originalCircleStrokeWidth / 2
+    }
+
+    fun startSelectAnimation(
+            menuButton: CircleMenuButton,
+            buttonIndex: Int,
+            buttonAngle: Float
+    ) {
         if (isAnimating) {
             return
         }
+
         menuController.enableButtons(false)
         circleColor = menuButton.backgroundTintList!!.defaultColor
         currentCircleStrokeWidth = originalCircleStrokeWidth
@@ -52,7 +68,7 @@ internal class ItemSelectionAnimator(
         val iconDrawable = ContextCompat.getDrawable(context, menuButton.iconResId)!!
         currentIconBitmap = getIconBitmap(iconDrawable)
         iconSourceRect = iconDrawable.bounds
-        startCircleDrawingAnimation(menuButton)
+        startCircleDrawingAnimation(buttonIndex)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -76,9 +92,9 @@ internal class ItemSelectionAnimator(
         return bitmap
     }
 
-    private fun startCircleDrawingAnimation(menuButton: CircleMenuButton) {
+    private fun startCircleDrawingAnimation(buttonIndex: Int) {
         isAnimating = true
-        controllerListener.onSelectAnimationStart(menuButton)
+        controllerListener.onSelectAnimationStart(buttonIndex)
         val circleAngleAnimation = ValueAnimator.ofFloat(START_CIRCLE_ANGLE.toFloat(), END_CIRCLE_ANGLE.toFloat())
         circleAngleAnimation.duration = SELECT_ANIMATION_DURATION.toLong()
         circleAngleAnimation.interpolator = DecelerateInterpolator()
@@ -87,13 +103,13 @@ internal class ItemSelectionAnimator(
             controllerListener.redrawView()
             if (currentCircleAngle == END_CIRCLE_ANGLE.toFloat()) {
                 menuController.showButtons(false)
-                startExitAnimation(menuButton)
+                startExitAnimation(buttonIndex)
             }
         }
         circleAngleAnimation.start()
     }
 
-    private fun startExitAnimation(menuButton: CircleMenuButton) {
+    private fun startExitAnimation(buttonIndex: Int) {
         val circleSizeAnimation = ValueAnimator.ofFloat(START_CIRCLE_SIZE_RATIO, END_CIRCLE_SIZE_RATIO)
         circleSizeAnimation.duration = EXIT_ANIMATION_DURATION.toLong()
         circleSizeAnimation.interpolator = DecelerateInterpolator()
@@ -107,7 +123,7 @@ internal class ItemSelectionAnimator(
                 currentCircleRadius = originalCircleRadius
                 currentCircleStrokeWidth = originalCircleStrokeWidth
                 controllerListener.redrawView()
-                controllerListener.onSelectAnimationEnd(menuButton)
+                controllerListener.onSelectAnimationEnd(buttonIndex)
                 menuController.isOpened = false
                 isAnimating = false
             }
@@ -136,10 +152,10 @@ internal class ItemSelectionAnimator(
     }
 
     private fun drawCircle(canvas: Canvas) {
-        val left = menuCenterX - currentCircleRadius
-        val top = menuCenterY - currentCircleRadius
-        val right = menuCenterX + currentCircleRadius
-        val bottom = menuCenterY + currentCircleRadius
+        val left = circleCenterX - currentCircleRadius
+        val top = circleCenterY - currentCircleRadius
+        val right = circleCenterX + currentCircleRadius
+        val bottom = circleCenterY + currentCircleRadius
         circleRect[left, top, right] = bottom
         val paint = Paint()
         paint.style = Paint.Style.STROKE
@@ -156,8 +172,8 @@ internal class ItemSelectionAnimator(
             return
         }
         val angle = startAngle + currentCircleAngle
-        val centerX = (menuCenterX - currentIconBitmap!!.width / 2.0).toFloat().roundToInt().toFloat()
-        val centerY = (menuCenterY - currentIconBitmap!!.height / 2.0).toFloat().roundToInt().toFloat()
+        val centerX = (circleCenterX - currentIconBitmap!!.width / 2.0).toFloat().roundToInt().toFloat()
+        val centerY = (circleCenterY - currentIconBitmap!!.height / 2.0).toFloat().roundToInt().toFloat()
         val left = (centerX + originalCircleRadius * cos(Math.toRadians(angle.toDouble()))).toFloat().roundToInt().toFloat()
         val top = (centerY + originalCircleRadius * sin(Math.toRadians(angle.toDouble()))).toFloat().roundToInt().toFloat()
         val right = left + iconSourceRect!!.right
@@ -177,13 +193,4 @@ internal class ItemSelectionAnimator(
         private const val ALPHA_OPAQUE = 255
     }
 
-    init {
-        currentCircleAngle = START_CIRCLE_ANGLE.toFloat()
-        circleAlpha = ALPHA_OPAQUE
-        originalCircleRadius = circleRadius.toFloat()
-        currentCircleRadius = originalCircleRadius
-        originalCircleStrokeWidth = context.resources.getDimension(R.dimen.circle_menu_button_size)
-        this.menuCenterX = menuCenterX + originalCircleStrokeWidth / 2
-        this.menuCenterY = menuCenterY + originalCircleStrokeWidth / 2
-    }
 }

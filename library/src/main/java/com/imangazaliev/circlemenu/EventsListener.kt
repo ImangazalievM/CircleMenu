@@ -6,7 +6,7 @@ internal class EventsListener {
     var onMenuOpenAnimationEnd: (() -> Unit)? = null
     var onMenuCloseAnimationStart: (() -> Unit)? = null
     var onMenuCloseAnimationEnd: (() -> Unit)? = null
-    var onButtonClickAnimationStart: ((menuButton: CircleMenuButton) -> Unit)? = null
-    var onButtonClickAnimationEnd: ((menuButton: CircleMenuButton) -> Unit)? = null
+    var onButtonClickAnimationStart: ((buttonIndex: Int) -> Unit)? = null
+    var onButtonClickAnimationEnd: ((buttonIndex: Int) -> Unit)? = null
 
 }

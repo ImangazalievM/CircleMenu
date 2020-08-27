@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:propertyName="rotation"
+    android:valueFrom="0"
+    android:valueTo="135"
+    android:duration="@integer/menu_icon_animation_duration"
+    android:interpolator="@interpolator/fast_out_slow_in">
+
+</objectAnimator>

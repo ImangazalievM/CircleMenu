@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.AnimatedVectorDrawable
@@ -14,20 +15,26 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+@SuppressLint("ViewConstructor")
 internal class CenterMenuButton(
         context: Context,
+        backgroundColor: Int,
+        menuIconType: CircleMenu.MenuIconType,
         private val iconColor: Int,
         private var isOpened: Boolean
 ) : FloatingActionButton(context) {
 
     private var preLollipopAnimationSet: AnimatorSet? = null
-
-    init {
-        setImageDrawable(getIconDrawable(!isOpened))
+    private val menuIcon: MenuIcon by lazy {
+        when (menuIconType) {
+            CircleMenu.MenuIconType.HAMBURGER -> HamburgerMenuIcon()
+            CircleMenu.MenuIconType.PLUS -> PlusMenuIcon()
+        }
     }
 
-    internal fun setColor(color: Int) {
-        backgroundTintList = ColorStateList.valueOf(color)
+    init {
+        backgroundTintList = ColorStateList.valueOf(backgroundColor)
+        setImageDrawable(getIconDrawable(!isOpened))
     }
 
     fun setOpened(isOpened: Boolean) {
@@ -40,8 +47,8 @@ internal class CenterMenuButton(
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private fun startVectorAnimation(isOpened: Boolean) {
-        val menuIcon = getIconDrawable(isOpened) as AnimatedVectorDrawable
+    private fun startVectorAnimation(isOpening: Boolean) {
+        val menuIcon = getIconDrawable(isOpening) as AnimatedVectorDrawable
         setImageDrawable(menuIcon)
         menuIcon.start()
     }
@@ -75,11 +82,13 @@ internal class CenterMenuButton(
         return preLollipopAnimationSet
     }
 
-    private fun getIconDrawable(isOpened: Boolean): Drawable {
+    private fun getIconDrawable(isOpening: Boolean): Drawable {
         val iconResId = if (isLollipop()) {
-            if (isOpened) R.drawable.ic_menu_animated else R.drawable.ic_close_animated
+            //animation from closed to opened
+            if (isOpening) menuIcon.openingAnimatedIcon else menuIcon.closingAnimatedIcon
         } else {
-            if (isOpened) R.drawable.ic_close_vector else R.drawable.ic_menu_vector
+            //if opening show close icon and vice versa
+            if (isOpening) menuIcon.closeIcon else menuIcon.openIcon
         }
 
         val icon = ContextCompat.getDrawable(context, iconResId)!!

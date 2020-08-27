@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:propertyName="pathData"
+    android:valueFrom="@string/path_plus"
+    android:valueTo="@string/path_cross"
+    android:duration="@integer/menu_icon_animation_duration"
+    android:interpolator="@interpolator/fast_out_slow_in"
+    android:valueType="pathType">
+
+</objectAnimator>

@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CircleMenu">
-        <attr name="startAngle" format="integer"/>
-        <attr name="distance" format="integer"/>
-        <attr name="openOnStart" format="boolean"/>
-        <attr name="buttonIcons" format="reference"/>
-        <attr name="buttonColors" format="reference"/>
-        <attr name="menuButtonColor" format="reference|color"/>
-        <attr name="menuIconColor" format="reference|color"/>
-        <attr name="iconsColor" format="reference|color"/>
+        <attr name="startAngle" format="integer|reference" />
+        <attr name="maxAngle" format="integer|reference" />
+        <attr name="distance" format="dimension|reference" />
+        <attr name="openOnStart" format="boolean" />
+        <attr name="buttonIcons" format="reference" />
+        <attr name="buttonColors" format="reference" />
+        <attr name="iconsColor" format="reference|color" />
+        <attr name="centerButtonColor" format="reference|color" />
+        <attr name="centerButtonIconColor" format="color|reference" />
+        <attr name="showSelectAnimation" format="boolean|reference" />
+        <attr name="menuIcon" format="enum">
+            <enum name="hamburger" value="0" />
+            <enum name="plus" value="1" />
+        </attr>
     </declare-styleable>
 
 
