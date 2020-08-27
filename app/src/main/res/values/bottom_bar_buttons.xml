@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="bottom_bar_icons">
+        <item>@drawable/ic_car</item>
+        <item>@drawable/ic_airplane</item>
+        <item>@drawable/ic_directions</item>
+    </array>
+
+    <array name="bottom_bar_colors">
+        <item>#FFFFFF</item>
+        <item>#FFFFFF</item>
+        <item>#FFFFFF</item>
+    </array>
+
+</resources>

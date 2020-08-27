@@ -1,0 +1,24 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/snackbarContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.imangazaliev.circlemenu.CircleMenu
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        app:buttonColors="@array/fab_menu_colors"
+        app:buttonIcons="@array/fab_menu_icons"
+        app:distance="120dp"
+        app:iconsColor="?colorAccent"
+        app:centerButtonColor="?colorAccent"
+        app:centerButtonIconColor="#ffffff"
+        app:maxAngle="140"
+        app:menuIcon="plus"
+        app:showSelectAnimation="false"
+        app:startAngle="-180" />
+
+</FrameLayout>

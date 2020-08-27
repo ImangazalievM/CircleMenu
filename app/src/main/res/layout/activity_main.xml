@@ -1,17 +1,27 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/snackbarContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:background="#000000">
+    android:background="#000000"
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <com.imangazaliev.circlemenu.CircleMenu
-        android:id="@+id/circleMenu"
+    <Button
+        android:id="@+id/simpleMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:buttonColors="@array/colors"
-        app:buttonIcons="@array/icons"/>
+        android:text="Simple Menu" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/bottomBarMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bottom Bar Menu" />
+
+    <Button
+        android:id="@+id/fabMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FAB Menu" />
+
+</LinearLayout>

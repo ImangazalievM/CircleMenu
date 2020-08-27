@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="fab_menu_icons">
+        <item>@drawable/ic_camera</item>
+        <item>@drawable/ic_edit</item>
+        <item>@drawable/ic_place</item>
+    </array>
+
+    <array name="fab_menu_colors">
+        <item>#FFFFFF</item>
+        <item>#FFFFFF</item>
+        <item>#FFFFFF</item>
+    </array>
+
+</resources>

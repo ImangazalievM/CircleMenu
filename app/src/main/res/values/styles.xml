@@ -1,11 +1,22 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Bridge">
+        <item name="colorPrimary">#424242</item>
+        <item name="colorPrimaryDark">#212121</item>
+        <item name="colorAccent">#d32f2f</item>
+    </style>
+
+    <style name="GreenTheme" parent="Theme.MaterialComponents.Bridge">
+        <item name="colorPrimary">#43A047</item>
+        <item name="colorPrimaryDark">#43A047</item>
+        <item name="colorAccent">#43A047</item>
+    </style>
+
+    <style name="BlueTheme" parent="Theme.MaterialComponents.Bridge">
+        <item name="colorPrimary">#4184de</item>
+        <item name="colorPrimaryDark">#4184de</item>
+        <item name="colorAccent">#4184de</item>
     </style>
 
 </resources>

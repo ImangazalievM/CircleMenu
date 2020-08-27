@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <array name="icons">
+    <array name="simple_menu_icons">
         <item>@drawable/ic_favorite</item>
         <item>@drawable/ic_search</item>
         <item>@drawable/ic_alert</item>
@@ -9,7 +9,7 @@
         <item>@drawable/ic_edit</item>
     </array>
 
-    <array name="colors">
+    <array name="simple_menu_colors">
         <item>#2196F3</item>
         <item>#4CAF50</item>
         <item>#F44336</item>

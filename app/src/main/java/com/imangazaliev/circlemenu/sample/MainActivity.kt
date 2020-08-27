@@ -1,11 +1,12 @@
 package com.imangazaliev.circlemenu.sample
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.reflect.KClass
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,34 +16,19 @@ class MainActivity : AppCompatActivity() {
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-        val titles = arrayListOf("Favorite", "Search", "Alert", "Place", "Edit")
-        circleMenu.setOnItemClickListener { buttonIndex ->
-            Snackbar.make(snackbarContainer, titles[buttonIndex], Snackbar.LENGTH_LONG).show()
+        simpleMenu.setOnClickListener {
+            openScreen(SimpleMenuActivity::class)
         }
+        bottomBarMenu.setOnClickListener {
+            openScreen(BottomBarMenuActivity::class)
+        }
+        fabMenu.setOnClickListener {
+            openScreen(FabMenuActivity::class)
+        }
+    }
 
-        circleMenu.onMenuOpenAnimationStart {
-            Log.d("CircleMenuStatus", "onMenuOpenAnimationStart")
-        }
-
-        circleMenu.onMenuOpenAnimationEnd() {
-            Log.d("CircleMenuStatus", "onMenuOpenAnimationEnd")
-        }
-
-        circleMenu.onMenuCloseAnimationStart() {
-            Log.d("CircleMenuStatus", "onMenuCloseAnimationStart")
-        }
-
-        circleMenu.onMenuCloseAnimationEnd() {
-            Log.d("CircleMenuStatus", "onMenuCloseAnimationEnd")
-        }
-
-        circleMenu.onButtonClickAnimationStart {
-            Log.d("CircleMenuStatus", "onButtonClickAnimationStart")
-        }
-
-        circleMenu.onButtonClickAnimationEnd {
-            Log.d("CircleMenuStatus", "onButtonClickAnimationEnd")
-        }
+    private fun openScreen(activity: KClass<out Activity>) {
+        startActivity(Intent(this, activity.java))
     }
 
 }

@@ -15,6 +15,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".SimpleMenuActivity" />
+
+        <activity
+            android:name=".BottomBarMenuActivity"
+            android:theme="@style/GreenTheme" />
+
+        <activity
+            android:name=".FabMenuActivity"
+            android:theme="@style/BlueTheme" />
     </application>
 
 </manifest>
