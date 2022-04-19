@@ -108,6 +108,7 @@ CircleMenu XML-options:
 - `centerButtonIconColor` - icon background color of center menu button
 <br><br>
 - `menuIcon` - center button icon type: `hamburger` or `plus`
+- `icon` - set a custom drawable as center menu icon
 - `openOnStart` - open the menu when the screen starts
 - `showSelectAnimation` - show select animation when clicking on on a button or just close the menu
 
