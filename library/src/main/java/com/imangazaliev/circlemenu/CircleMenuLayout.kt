@@ -19,7 +19,8 @@ internal class CircleMenuLayout(
         private val circleMaxAngle: Int,
         private val circleStartAngle: Int,
         private var icons: List<Int>,
-        private var colors: List<Int>
+        private var colors: List<Int>,
+        private val icon: Int
 ) : FrameLayout(context), MenuController.Listener {
 
     val isOpened: Boolean
@@ -30,6 +31,7 @@ internal class CircleMenuLayout(
             context,
             centerButtonColor,
             menuIconType,
+            icon,
             centerButtonIconColor,
             openOnStart
     )

@@ -17,6 +17,7 @@
             <enum name="hamburger" value="0" />
             <enum name="plus" value="1" />
         </attr>
+        <attr name="icon" format="reference"/>
     </declare-styleable>
 
 

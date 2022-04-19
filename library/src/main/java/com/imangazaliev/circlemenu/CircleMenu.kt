@@ -59,6 +59,7 @@ class CircleMenu @JvmOverloads constructor(
                     iconsIds.getResourceId(it, -1)
                 }
             }
+            val icon = getResourceId(R.styleable.CircleMenu_icon, -1)
 
             if (colors.isEmpty() || icons.isEmpty()) {
                 throw IllegalArgumentException("Colors and icons array must not be empty")
@@ -80,7 +81,8 @@ class CircleMenu @JvmOverloads constructor(
                     showSelectAnimation = showSelectAnimation,
                     openOnStart = openOnStart,
                     colors = colors,
-                    icons = icons
+                    icons = icons,
+                    icon = icon
             )
 
             initMenuButton(menuIconType, centerButtonColor, centerButtonIconColor)

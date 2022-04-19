@@ -20,11 +20,13 @@ internal class CenterMenuButton(
         context: Context,
         backgroundColor: Int,
         menuIconType: CircleMenu.MenuIconType,
+        private var icon: Int,
         private val iconColor: Int,
         private var isOpened: Boolean
 ) : FloatingActionButton(context) {
 
     private var preLollipopAnimationSet: AnimatorSet? = null
+    private var isTintSet: Boolean = false
     private val menuIcon: MenuIcon by lazy {
         when (menuIconType) {
             CircleMenu.MenuIconType.HAMBURGER -> HamburgerMenuIcon()
@@ -34,13 +36,17 @@ internal class CenterMenuButton(
 
     init {
         backgroundTintList = ColorStateList.valueOf(backgroundColor)
-        setImageDrawable(getIconDrawable(!isOpened))
+//        setImageDrawable(getIconDrawable(!isOpened))
+
+        // Fix for close icon showing up by default when using custom icon
+        if (icon > 0) setImageDrawable(getIconDrawable(isOpened)) else setImageDrawable(getIconDrawable(!isOpened))
     }
 
     fun setOpened(isOpened: Boolean) {
         this.isOpened = isOpened
         if (isLollipop()) {
-            startVectorAnimation(isOpened)
+            // PreLollipopAnimation as drawable set by user is not AnimatedVectorDrawable
+            if (icon > 0) startPreLollipopAnimation() else startVectorAnimation(isOpened)
         } else {
             startPreLollipopAnimation()
         }
@@ -83,6 +89,16 @@ internal class CenterMenuButton(
     }
 
     private fun getIconDrawable(isOpening: Boolean): Drawable {
+        // Tinting icon only when explicitly declared by user
+        isTintSet = (iconColor != -12303292)
+
+        if (icon > 0) {
+            val iconResId = if (isOpening) menuIcon.closeIcon else icon
+            val drawableIcon = ContextCompat.getDrawable(context, iconResId)!!
+            if (isTintSet) drawableIcon.setTintCompat(iconColor)
+            return drawableIcon
+        }
+
         val iconResId = if (isLollipop()) {
             //animation from closed to opened
             if (isOpening) menuIcon.openingAnimatedIcon else menuIcon.closingAnimatedIcon
@@ -92,7 +108,7 @@ internal class CenterMenuButton(
         }
 
         val icon = ContextCompat.getDrawable(context, iconResId)!!
-        icon.setTintCompat(iconColor)
+        if (isTintSet) icon.setTintCompat(iconColor)
         return icon
     }
 
